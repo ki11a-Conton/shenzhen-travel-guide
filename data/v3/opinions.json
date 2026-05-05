@@ -1,0 +1,10 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "opinions": [
+    {"id": "op_ww_01", "target_type": "attraction", "target_id": "attr_window_world", "stance": "pro", "claim": "世界之窗是深圳必去景点", "reasoning": "世界之窗是深圳的地标性景点，可以一天看遍全球130多个名胜微缩景观，拍照很出片，夜场灯光秀更是绝美。虽然门票不便宜，但体验独特，值得打卡。", "source_files": ["sf_01"]},
+    {"id": "op_ww_02", "target_type": "attraction", "target_id": "attr_window_world", "stance": "contra", "claim": "世界之窗性价比不高", "reasoning": "世界之窗门票220元比较贵，而且只是微缩景观，不如直接去看真实的景点。节假日人太多，排队时间长，体验一般。", "source_files": ["sf_01"]},
+    {"id": "op_dms_01", "target_type": "attraction", "target_id": "attr_dameisha", "stance": "pro", "claim": "大梅沙是深圳最佳海滨浴场", "reasoning": "大梅沙是深圳八景之一，沙滩干净，海水清澈，而且免费！地铁8号线直达，交通方便。适合全家出游，是深圳人周末度假的首选。", "source_files": ["sf_01"]},
+    {"id": "op_yeziji_01", "target_type": "dish", "target_id": "dish_yeziji", "stance": "pro", "claim": "椰子鸡是深圳必吃美食", "reasoning": "椰子鸡被称为深圳市菜，润园四季的椰子鸡用海南椰青和文昌鸡现做，汤底清甜，鸡肉嫩滑，是深圳最具代表性的美食。", "source_files": ["sf_01"]}
+  ]
+}

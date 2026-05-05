@@ -1,0 +1,81 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "warnings": [
+    {
+      "id": "warn_ww_01",
+      "category": "景点避雷",
+      "content": "世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。",
+      "severity": "medium",
+      "alternative": "选择工作日前往或购买夜场票",
+      "alternative_details": "夜场票人少且便宜，可以欣赏灯光秀",
+      "tags": ["tag_util_must", "tag_zone_nanshan"],
+      "attraction_ids": ["attr_window_world"],
+      "restaurant_ids": [],
+      "show_ids": [],
+      "shortcut_ids": [],
+      "zone_ids": ["tag_zone_nanshan"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "warn_hv_01",
+      "category": "景点避雷",
+      "content": "欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。",
+      "severity": "low",
+      "alternative": "选择适合儿童的项目游玩",
+      "alternative_details": "欢乐谷有专门的儿童游乐区",
+      "tags": ["tag_aud_family", "tag_zone_nanshan"],
+      "attraction_ids": ["attr_happy_valley"],
+      "restaurant_ids": [],
+      "show_ids": [],
+      "shortcut_ids": [],
+      "zone_ids": ["tag_zone_nanshan"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "warn_dm_01",
+      "category": "景点避雷",
+      "content": "东门老街人多拥挤，注意保管好随身物品，谨防小偷。",
+      "severity": "medium",
+      "alternative": "选择上午时段前往，人少相对安全",
+      "alternative_details": "上午10点前人流较少",
+      "tags": ["tag_zone_luohu"],
+      "attraction_ids": ["attr_dongmen"],
+      "restaurant_ids": [],
+      "show_ids": [],
+      "shortcut_ids": [],
+      "zone_ids": ["tag_zone_luohu"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "warn_ls_01",
+      "category": "演出避雷",
+      "content": "市民中心灯光秀需要提前预约，临时前往可能无法入场。",
+      "severity": "high",
+      "alternative": "提前在福田文体通公众号预约",
+      "alternative_details": "每周五、六及节假日举办，建议提前3天预约",
+      "tags": ["tag_util_reserve", "tag_zone_futian"],
+      "attraction_ids": [],
+      "restaurant_ids": [],
+      "show_ids": ["show_light_show"],
+      "shortcut_ids": [],
+      "zone_ids": ["tag_zone_futian"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "warn_sm_01",
+      "category": "景点避雷",
+      "content": "深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。",
+      "severity": "high",
+      "alternative": "提前在深圳博物馆公众号预约",
+      "alternative_details": "周二至周日9:00-17:00开放，16:30停止入场",
+      "tags": ["tag_util_reserve", "tag_zone_futian"],
+      "attraction_ids": ["attr_shenzhen_museum"],
+      "restaurant_ids": [],
+      "show_ids": [],
+      "shortcut_ids": [],
+      "zone_ids": ["tag_zone_futian"],
+      "source_files": ["sf_01"]
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "source_files": ["sf_01"],
+  "ticket_prices": {
+    "note": "深圳部分景点收费，部分免费",
+    "tiers": [
+      {
+        "type": "免费景点",
+        "price": 0,
+        "description": "大梅沙、深圳湾公园、莲花山公园、东门老街、甘坑古镇、海上世界"
+      },
+      {
+        "type": "主题乐园",
+        "price": 220,
+        "description": "世界之窗日场220元，夜场85元；欢乐谷日场230元"
+      },
+      {
+        "type": "摩天轮",
+        "price": 150,
+        "description": "湾区之光摩天轮150元/人"
+      }
+    ],
+    "express_pass": {
+      "note": "部分景点支持快速通行",
+      "options": [
+        {
+          "type": "世界之窗快速通行",
+          "price": 100,
+          "description": "可优先体验热门项目"
+        }
+      ]
+    }
+  },
+  "parking": {
+    "options": [
+      {
+        "type": "大梅沙景区停车场",
+        "price": 20,
+        "unit": "次"
+      },
+      {
+        "type": "奥特莱斯停车场",
+        "price": 10,
+        "unit": "小时",
+        "description": "消费满额可免费"
+      },
+      {
+        "type": "市区商场停车场",
+        "price": 10,
+        "unit": "小时"
+      }
+    ]
+  },
+  "locker": {
+    "self_service": [
+      {
+        "type": "景区寄存柜",
+        "price": 5,
+        "unit": "小时",
+        "size": "小柜可放背包，大柜可放行李箱"
+      }
+    ],
+    "ride_locker": {
+      "description": "欢乐谷等景区提供寄存服务",
+      "price": "5-10元/次"
+    },
+    "baggage_service": {
+      "description": "深圳北站、深圳站有行李寄存",
+      "price": "10-20元/件/天"
+    }
+  },
+  "rental": {
+    "wheelchair": {
+      "price": 0,
+      "unit": "免费",
+      "location": "主要景区游客中心"
+    },
+    "stroller": [
+      {
+        "type": "景区婴儿车",
+        "price": 0,
+        "unit": "免费或押金",
+        "location": "主要景区游客中心"
+      }
+    ]
+  },
+  "park_rules": {
+    "reentry": "大梅沙等开放式景区可多次进出；博物馆当日可多次进出",
+    "food_policy": "景区内允许自带食物，部分室内场馆禁止饮食"
+  },
+  "transportation": {
+    "subway": {
+      "lines": ["1号线", "2号线", "3号线", "4号线", "5号线", "6号线", "7号线", "8号线", "9号线", "10号线", "11号线"],
+      "station": "世界之窗站（1/2号线）、深圳湾公园站（9号线）、大梅沙站（8号线）",
+      "best_exit": "各景点地铁出口详见攻略",
+      "security_advice": "高峰期人多注意保管随身物品"
+    },
+    "taxi_arrival": [
+      {
+        "location": "深圳宝安机场",
+        "note": "地铁11号线直达市区"
+      },
+      {
+        "location": "深圳北站",
+        "note": "地铁4/5/6号线换乘"
+      }
+    ],
+    "taxi_departure": [
+      {
+        "location": "福田CBD",
+        "note": "打车最方便"
+      }
+    ],
+    "taxi_cost": "深圳出租车起步价10元/2公里，网约车价格相近",
+    "taxi_tips": [
+      "高峰期（7:30-9:00, 17:30-19:00）建议地铁出行",
+      "机场到市区建议坐地铁11号线",
+      "大梅沙节假日交通拥堵，建议地铁"
+    ]
+  },
+  "clothing": {
+    "must_wear": "舒适的步行鞋",
+    "must_bring": "防晒霜、遮阳帽、雨伞",
+    "forbidden": "无特殊禁忌",
+    "note": "深圳气候温暖，夏季炎热注意防暑；海滨游玩带好泳衣和拖鞋"
+  },
+  "essential_items": [
+    {
+      "item": "身份证",
+      "purpose": "部分景点需实名预约"
+    },
+    {
+      "item": "充电宝",
+      "purpose": "拍照导航耗电快"
+    },
+    {
+      "item": "防晒霜",
+      "purpose": "深圳阳光强烈"
+    },
+    {
+      "item": "泳衣拖鞋",
+      "purpose": "大梅沙等海滨游玩"
+    }
+  ],
+  "prohibited_items": [
+    {
+      "item": "无人机",
+      "reason": "部分景区禁止飞行"
+    }
+  ],
+  "pre_trip_checklist": [
+    {
+      "item": "预约大梅沙（如需）",
+      "purpose": "旺季需提前预约"
+    },
+    {
+      "item": "预约灯光秀",
+      "purpose": "市民中心灯光秀需预约"
+    },
+    {
+      "item": "下载深圳通APP",
+      "purpose": "方便乘坐地铁公交"
+    }
+  ],
+  "best_dates": {
+    "off_peak_seasons": [
+      "3-5月（春季，天气舒适）",
+      "10-12月（秋季，凉爽宜人）"
+    ],
+    "best_weekdays": "周二至周四游客相对较少",
+    "weekend_note": "周末人流量大，海滨景点拥挤",
+    "holiday_tip": "五一、十一等长假人流量极大，建议错峰"
+  },
+  "crowd_estimation": {
+    "method": "通过地铁客流量判断",
+    "formula": "工作日<周末<节假日",
+    "thresholds": {
+      "low": "工作日",
+      "medium": "周末",
+      "high": "节假日",
+      "extreme": "黄金周"
+    }
+  },
+  "warning_ids": ["warn_ww_01", "warn_hv_01", "warn_dm_01", "warn_ls_01", "warn_sm_01"]
+}

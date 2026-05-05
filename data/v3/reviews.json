@@ -1,0 +1,16 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "reviews": [
+    {"id": "rev_ww_01", "target_type": "attraction", "target_id": "attr_window_world", "content": "世界之窗很震撼，一天看遍全球名胜，埃菲尔铁塔拍照很出片。夜场灯光秀更美，建议买夜场票。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rev_hv_01", "target_type": "attraction", "target_id": "attr_happy_valley", "content": "欢乐谷刺激项目很多，雪域雄鹰过山车太刺激了！建议工作日去，人少不用排队。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rev_dms_01", "target_type": "attraction", "target_id": "attr_dameisha", "content": "大梅沙沙滩很干净，海水清澈，夏天人很多，建议早上去。现在地铁8号线直达很方便。", "sentiment": "mixed", "source_files": ["sf_01"]},
+    {"id": "rev_szb_01", "target_type": "attraction", "target_id": "attr_shenzhen_bay", "content": "深圳湾公园太美了！傍晚来散步看日落，还能远眺香港。13公里滨海栈道很适合骑行。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rev_lh_01", "target_type": "attraction", "target_id": "attr_lianhua_mountain", "content": "莲花山公园是俯瞰深圳CBD的最佳地点，邓小平铜像广场视野开阔，夜景也很美。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rev_dm_01", "target_type": "attraction", "target_id": "attr_dongmen", "content": "东门老街人太多了，商业化严重，但小吃确实多。注意保管好随身物品。", "sentiment": "mixed", "source_files": ["sf_01"]},
+    {"id": "rest_rev_01", "target_type": "restaurant", "target_id": "rest_runyuan", "content": "润园四季椰子鸡太好吃了！汤底清甜，鸡肉嫩滑，配上沙姜酱油绝了。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rest_rev_02", "target_type": "restaurant", "target_id": "rest_guangming", "content": "光明乳鸽名不虚传，皮脆肉嫩，一口咬下去汁水四溢。牛初乳也很浓郁。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rest_rev_03", "target_type": "restaurant", "target_id": "rest_baheli", "content": "八合里牛肉火锅很正宗，牛肉现切现涮，吊龙和匙柄必点！沙茶酱是灵魂。", "sentiment": "positive", "source_files": ["sf_01"]},
+    {"id": "rest_rev_04", "target_type": "restaurant", "target_id": "rest_lifang", "content": "荔芳糖水铺料很足，甜度刚好，高圆圆同款打卡成功！", "sentiment": "positive", "source_files": ["sf_01"]}
+  ]
+}

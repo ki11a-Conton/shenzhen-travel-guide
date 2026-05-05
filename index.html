@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>长沙旅游攻略</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f2f2f7;--card:#fff;--text:#1c1c1e;--sub:#8e8e93;--border:#e5e5ea;
+  --green:#34c759;--orange:#ff9500;--red:#ff3b30;
+  --radius:14px;
+  /* 语义色 */
+  --yellow: #f1c40f;
+  /* 透明度辅助 */
+  --glass-bg: rgba(255,255,255,.85);
+  --glass-border: rgba(0,0,0,.08);
+  --divider: rgba(0,0,0,.04);
+  --shadow-color: rgba(0,0,0,.06);
+  --shadow: 0 1px 4px var(--shadow-color);
+  /* 非实体内容：黑白灰 */
+  --neutral: #3a3a3c;
+  --neutral-light: rgba(0,0,0,.04);
+  --neutral-border: rgba(0,0,0,.15);
+  --opinion-bg: linear-gradient(135deg, #f9f9fb, #f5f5f7);
+  --relations-bg: linear-gradient(135deg, #f9f9fb, #f5f5f7);
+  /* 实体颜色：高区分度、统一饱和度 */
+  --c-attraction: #007aff;   /* 蓝 — 项目 */
+  --c-show: #af52de;         /* 紫 — 演出 */
+  --c-restaurant: #ff9500;   /* 橙 — 餐厅 */
+  --c-dish: #ff9500;         /* 橙 — 菜品（与餐厅同系） */
+  --c-tip: #34c759;          /* 绿 — 技巧 */
+  --c-warning: #ff3b30;      /* 红 — 避雷 */
+  --c-shortcut: #8e8e93;     /* 灰 — 小道（中性） */
+  --c-itinerary: #5856d6;    /* 靛蓝 — 行程 */
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding-top:56px;padding-bottom:64px}
+a{color:var(--neutral);text-decoration:none}
+
+/* 顶栏 */
+#header{position:fixed;top:0;left:0;right:0;height:56px;background:var(--glass-bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid var(--glass-border);display:flex;align-items:center;padding:0 16px;z-index:100}
+#header .logo{font-weight:800;font-size:18px;letter-spacing:-.5px;color:var(--text)}
+#header .search-btn{flex:1;margin:0 12px;display:flex;align-items:center;justify-content:center;height:32px;border-radius:10px;background:var(--divider);border:1px solid var(--shadow-color);font-size:13px;color:var(--sub);cursor:pointer;letter-spacing:.2px}
+
+/* 底栏 */
+#nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:var(--glass-bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid var(--glass-border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+#nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--sub);text-decoration:none;letter-spacing:.3px;transition:color .2s;position:relative}
+#nav a.active{color:var(--text);font-weight:600}
+#nav a.active::after{content:'';position:absolute;bottom:4px;width:16px;height:2.5px;border-radius:2px;background:var(--text)}
+#nav a .icon{font-size:22px;margin-bottom:1px}
+
+/* 内容区 */
+#app{padding:14px 12px;max-width:600px;margin:0 auto}
+
+/* 卡片 */
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card.standalone{margin-bottom:12px}
+.card.hint{margin-bottom:16px}
+.warn-banner{background:linear-gradient(135deg,#f9f9fb,#f5f5f7);border-left:4px solid var(--neutral);margin-bottom:12px;padding:10px 14px;font-size:13px;color:var(--neutral)}
+.footer-text{margin-top:20px;text-align:center;color:var(--sub);font-size:13px}
+.card h3{font-size:16px;margin-bottom:8px;font-weight:600;letter-spacing:-.2px}
+.card p{margin-bottom:5px}
+.card p:last-child{margin-bottom:0}
+
+/* 标签 */
+.tag{display:inline-block;background:var(--neutral-light);color:var(--neutral);padding:4px 10px;border-radius:20px;font-size:12px;margin:2px 4px 2px 0;font-weight:500}
+.tag.zone{background:rgba(255,149,0,.1);color:var(--orange)}
+.tag.warn{background:rgba(255,59,48,.08);color:var(--red)}
+.tag.intensity{background:rgba(255,59,48,.08);color:var(--red)}
+.tag.audience{background:rgba(175,82,222,.08);color:var(--c-show)}
+.tag.utility{background:rgba(52,199,89,.08);color:var(--green)}
+.tag.taste{background:rgba(255,149,0,.08);color:var(--orange)}
+.tag.meta_tag{background:var(--neutral-light);color:var(--neutral)}
+.tag.clickable{cursor:pointer;border:1px solid var(--neutral-border)}
+.tag.clickable:active{background:var(--neutral-light)}
+
+/* 评分 */
+.stars{color:var(--yellow);letter-spacing:1px;font-size:14px}
+
+/* 严重度 */
+.sev-high{color:var(--red);font-weight:700}
+.sev-medium{color:var(--orange);font-weight:600}
+.sev-low{color:var(--green)}
+
+/* 网格 */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.grid-item{background:var(--card);border-radius:var(--radius);padding:22px 8px;text-align:center;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s}
+.grid-item:active{transform:scale(.96)}
+.grid-item .num{font-size:32px;font-weight:800;color:var(--neutral);letter-spacing:-.8px}
+.grid-item .label{font-size:11px;color:var(--sub);margin-top:4px;letter-spacing:.3px}
+.grid-item .grid-hint{font-size:10px;color:var(--sub);margin-top:2px;opacity:.7}
+
+/* 筛选栏 */
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.filter-btn{padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:var(--card);font-size:13px;cursor:pointer;color:var(--text);transition:all .2s}
+.filter-btn.active{background:var(--text);color:var(--card);border-color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+/* 列表项 */
+.list-item{background:var(--card);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:transform .15s;border-left:3px solid transparent}
+.list-item:active{transform:scale(.985)}
+.list-item .info{flex:1;min-width:0}
+.list-item .info h4{font-size:15px;margin-bottom:3px;font-weight:600;letter-spacing:-.1px}
+.list-item .info p{font-size:13px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-item .arrow{color:var(--sub);font-size:18px;margin-left:8px;font-weight:300}
+
+/* 首页Top5横向柱状图 */
+.rank-chart{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.rank-chart-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-.2px}
+.rank-row{display:flex;align-items:center;margin-bottom:10px;cursor:pointer;transition:transform .15s}
+.rank-row:last-child{margin-bottom:0}
+.rank-row:active{transform:scale(.98)}
+.rank-num{width:22px;font-size:13px;font-weight:800;color:var(--c-attraction);flex-shrink:0}
+.rank-name{width:130px;font-size:12px;font-weight:600;color:var(--text);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
+.rank-bar-wrap{flex:1;height:26px;background:var(--bg);border-radius:6px;overflow:hidden;position:relative}
+.rank-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;transition:width .6s ease}
+.rank-bar span{font-size:11px;font-weight:700;color:var(--card);white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.rank-stars{margin-left:6px;font-size:11px;flex-shrink:0}
+
+/* 首页技巧网格 */
+.tip-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.tip-card{background:var(--card);border-radius:var(--radius);padding:14px 12px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s;border-left:3px solid var(--c-tip)}
+.tip-card:active{transform:scale(.97)}
+.tip-card .tip-icon{font-size:20px;margin-bottom:6px}
+.tip-card h4{font-size:13px;font-weight:600;margin-bottom:4px;letter-spacing:-.1px;line-height:1.3}
+.tip-card p{font-size:11px;color:var(--sub);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* 首页菜品横向滚动 — 已改为网格，样式备用已移除 */
+
+/* 首页轮播 */
+.carousel{position:relative;margin-bottom:12px;overflow:hidden;touch-action:pan-y}
+.carousel-track{display:flex;transition:transform .35s ease}
+.carousel-slide{width:100%;flex-shrink:0}
+.carousel-dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s}
+.carousel-dot.active{background:var(--neutral);width:18px;border-radius:3px}
+.list-item[data-type="attraction"]{border-left-color:var(--c-attraction)}
+.list-item[data-type="show"]{border-left-color:var(--c-show)}
+.list-item[data-type="restaurant"]{border-left-color:var(--c-restaurant)}
+.list-item[data-type="dish"]{border-left-color:var(--c-dish)}
+.list-item[data-type="tip"]{border-left-color:var(--c-tip)}
+.list-item[data-type="warning"]{border-left-color:var(--c-warning)}
+.list-item[data-type="shortcut"]{border-left-color:var(--c-shortcut)}
+.list-item[data-type="itinerary"]{border-left-color:var(--c-itinerary)}
+.detail-header{border-left:4px solid var(--neutral)}
+.detail-header[data-type="attraction"]{border-left-color:var(--c-attraction)}
+.detail-header[data-type="show"]{border-left-color:var(--c-show)}
+.detail-header[data-type="restaurant"]{border-left-color:var(--c-restaurant)}
+.detail-header[data-type="dish"]{border-left-color:var(--c-dish)}
+.detail-header[data-type="tip"]{border-left-color:var(--c-tip)}
+.detail-header[data-type="warning"]{border-left-color:var(--c-warning)}
+.detail-header[data-type="shortcut"]{border-left-color:var(--c-shortcut)}
+.detail-header[data-type="itinerary"]{border-left-color:var(--c-itinerary)}
+
+/* 详情页 */
+.detail-header{background:var(--card);border-radius:var(--radius);padding:22px 18px 18px;margin-bottom:10px;box-shadow:var(--shadow)}
+.detail-header h2{font-size:22px;margin-bottom:6px;font-weight:700;letter-spacing:-.5px}
+.detail-header .sub{color:var(--sub);font-size:14px;margin-bottom:10px}
+
+/* 分区标题 */
+.section-title{font-size:15px;font-weight:700;margin:18px 0 8px;padding-left:10px;border-left:3px solid var(--section-color, var(--neutral));letter-spacing:-.1px}
+
+/* 对立观点 */
+.opinion-block{background:var(--opinion-bg);border-left:3px solid var(--section-color, var(--neutral-border));padding:14px 16px;margin:6px 0;border-radius:0 var(--radius) var(--radius) 0;font-size:14px}
+.opinion-block .stance{font-weight:700;margin-bottom:4px}
+.opinion-block .stance.pro{color:var(--green)}
+.opinion-block .stance.con{color:var(--red)}
+
+/* 时间轴 */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:linear-gradient(to bottom,var(--section-color, var(--neutral-border)),var(--border));border-radius:1px}
+.timeline-item{position:relative;padding-left:24px;margin-bottom:16px}
+.timeline-item::before{content:"";position:absolute;left:-21px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--section-color, var(--neutral));border:2.5px solid var(--card);box-shadow:0 0 0 2px var(--section-color, var(--neutral))}
+.timeline-item .time{font-size:13px;color:var(--section-color, var(--neutral));font-weight:600}
+.timeline-item .action{font-size:14px;margin-top:2px}
+.timeline-item .note{font-size:13px;color:var(--sub);margin-top:2px}
+.tl-link{cursor:pointer}
+.tl-link .action{color:var(--section-color, var(--neutral));text-decoration:underline;text-underline-offset:2px}
+
+/* 关联区 */
+.relations{background:var(--relations-bg);border-radius:var(--radius);padding:14px 16px;margin-top:10px;box-shadow:var(--shadow)}
+.relations .rel-title{font-size:13px;font-weight:600;color:var(--section-color, var(--neutral));margin-bottom:6px;letter-spacing:.3px}
+.rel-subtitle{font-size:13px;color:var(--sub);margin-bottom:4px}
+.rel-subtitle.mt{margin-top:8px}
+.rel-item{padding:8px 0;border-bottom:1px solid var(--divider);font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.rel-item:last-child{border-bottom:none}
+.rel-item:active{color:var(--section-color, var(--neutral))}
+.relations .rel-arrow{color:var(--sub);font-size:16px;margin-left:8px;flex-shrink:0}
+.relations .rel-static{cursor:default;color:var(--text)}
+
+/* 空状态 */
+.empty{text-align:center;padding:48px 20px;color:var(--sub);font-size:14px}
+
+/* 演出时间轴 */
+.schedule-page{padding-bottom:20px}
+.schedule-period{font-size:13px;font-weight:600;color:var(--sub);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-top:8px}
+.schedule-slot{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--divider);cursor:pointer;transition:background .15s}
+.schedule-slot:active{background:rgba(0,0,0,.03)}
+.schedule-time{font-size:20px;font-weight:700;color:var(--section-color, var(--neutral));min-width:56px;letter-spacing:-.5px}
+.schedule-info{flex:1;margin-left:12px}
+.schedule-name{font-size:15px;font-weight:600;color:var(--text)}
+.schedule-meta{font-size:12px;color:var(--sub);margin-top:2px}
+
+/* 面包屑 */
+.breadcrumb{font-size:13px;margin-bottom:12px;display:flex;align-items:center;flex-wrap:wrap;gap:2px;padding:8px 12px;background:var(--card);border-radius:10px;box-shadow:0 1px 2px var(--divider)}
+.bc-item{color:var(--neutral);cursor:pointer;padding:2px 6px;border-radius:4px;transition:background .15s}
+.bc-item:active{background:var(--neutral-light)}
+.bc-here{color:var(--text);font-weight:600;cursor:default;padding:2px 6px}
+.bc-sep{color:var(--border);font-size:11px;margin:0 1px}
+
+/* 可点击文字 */
+.wc-link{color:var(--neutral);cursor:pointer}
+.wc-link:active{opacity:.6}
+
+/* 隐藏 */
+.hidden{display:none}
+
+/* 通用辅助类 */
+.sub-text{font-size:13px;color:var(--sub)}
+.small-text{font-size:12px;color:var(--sub)}
+.warn-card{border-left-color:var(--c-warning)}
+.dish-card{border-left-color:var(--c-dish)}
+.indent{padding-left:12px}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <span class="logo">长沙攻略</span>
+  <div class="search-btn" onclick="nav('tags')">🔍 按标签查找</div>
+</div>
+
+<div id="app"></div>
+
+<div id="nav">
+  <a href="#home" data-page="home" onclick="nav('home')"><span class="icon">🏠</span>首页</a>
+  <a href="#attractions" data-page="attractions" onclick="nav('attractions')"><span class="icon">🎢</span>项目</a>
+  <a href="#restaurants" data-page="restaurants" onclick="nav('restaurants')"><span class="icon">🍽️</span>餐厅</a>
+  <a href="#shows" data-page="shows" onclick="nav('shows')"><span class="icon">🎭</span>演出</a>
+  <a href="#more" data-page="more" onclick="nav('more')"><span class="icon">📋</span>更多</a>
+</div>
+
+<script>
+// ========== 数据注入 ==========
+const DATA = {"meta":{"last_updated":"2026-05-05","version":"3.2.0","schema_version":"3.2.0","previous_version":"3.1.0","migration_date":"2026-05-05","changes":["初始版本：深圳城市旅游攻略"],"park":{"name":"深圳","name_en":"Shenzhen","location":"广东省深圳市","opening_time":"全天开放（各景点时间不同）","closing_time":{"weekday":"各景点不同","weekend_holiday":"各景点不同","note":"世界之窗9:30-22:00，欢乐谷9:30-22:00，大梅沙6:30-23:00，深圳湾公园6:00-23:00"},"entry_deadline":{"weekday":"各景点不同","weekend_holiday":"各景点不同","note":"世界之窗、欢乐谷21:00停止入场，博物馆17:00停止入馆"},"zones":["福田区","南山区","罗湖区","盐田区","宝安区","大鹏新区"]},"source_files":[{"id":"sf_01","filename":"shenzhen_research.md","type":"research","description":"深圳旅游综合研究资料"}]},"tags":{"version":"3.2.0","last_updated":"2026-05-05","categories":[{"id":"zone","name":"区域","description":"深圳市各行政区"},{"id":"attraction_type","name":"景点类型","description":"景点分类"},{"id":"intensity","name":"体力强度","description":"游玩所需体力"},{"id":"timing","name":"游玩时段","description":"推荐游玩时间"},{"id":"facility","name":"设施","description":"配套设施"},{"id":"audience","name":"适合人群","description":"推荐人群"},{"id":"utility","name":"实用标签","description":"实用信息"},{"id":"meta_tag","name":"元标签","description":"其他标签"},{"id":"taste","name":"口味","description":"美食口味"},{"id":"dish_type","name":"菜品类型","description":"美食分类"},{"id":"preparation","name":"行前准备","description":"准备工作"}],"tags":[{"id":"tag_zone_futian","name":"福田区","category":"zone","description":"深圳CBD核心区，市民中心、莲花山所在地"},{"id":"tag_zone_nanshan","name":"南山区","category":"zone","description":"深圳科技创新区，世界之窗、欢乐谷、深圳湾所在"},{"id":"tag_zone_luohu","name":"罗湖区","category":"zone","description":"深圳老城区，东门老街、罗湖口岸所在"},{"id":"tag_zone_yantian","name":"盐田区","category":"zone","description":"深圳东部海滨，大梅沙、小梅沙所在"},{"id":"tag_zone_baoan","name":"宝安区","category":"zone","description":"深圳西部，欢乐港湾、机场所在"},{"id":"tag_zone_dapeng","name":"大鹏新区","category":"zone","description":"深圳东部半岛，大鹏所城、较场尾所在"},{"id":"tag_type_theme_park","name":"主题乐园","category":"attraction_type","description":"大型主题游乐园"},{"id":"tag_type_nature","name":"自然风光","category":"attraction_type","description":"山水景观、海滨风光"},{"id":"tag_type_landmark","name":"城市地标","category":"attraction_type","description":"标志性建筑和景点"},{"id":"tag_type_museum","name":"博物馆","category":"attraction_type","description":"各类展览馆、博物馆"},{"id":"tag_type_foodstreet","name":"美食街区","category":"attraction_type","description":"小吃街、美食聚集地"},{"id":"tag_type_culture","name":"人文历史","category":"attraction_type","description":"古镇、文化景点"},{"id":"tag_int_easy","name":"轻松","category":"intensity","description":"适合休闲散步"},{"id":"tag_int_medium","name":"适中","category":"intensity","description":"需要一定体力"},{"id":"tag_int_hard","name":"较累","category":"intensity","description":"需要较强体力"},{"id":"tag_time_morning","name":"上午推荐","category":"timing","description":"上午游览体验最佳"},{"id":"tag_time_afternoon","name":"下午推荐","category":"timing","description":"下午游览体验最佳"},{"id":"tag_time_evening","name":"傍晚推荐","category":"timing","description":"傍晚游览体验最佳"},{"id":"tag_time_night","name":"夜间推荐","category":"timing","description":"夜间游览体验最佳"},{"id":"tag_fac_parking","name":"有停车场","category":"facility","description":"提供停车服务"},{"id":"tag_fac_subway","name":"有地铁直达","category":"facility","description":"地铁可达"},{"id":"tag_fac_food","name":"有餐饮","category":"facility","description":"周边有餐饮"},{"id":"tag_aud_family","name":"亲子","category":"audience","description":"适合亲子游玩"},{"id":"tag_aud_couple","name":"情侣","category":"audience","description":"适合情侣约会"},{"id":"tag_aud_friends","name":"朋友","category":"audience","description":"适合朋友聚会"},{"id":"tag_aud_solo","name":"独行","category":"audience","description":"适合独自游玩"},{"id":"tag_util_free","name":"免费","category":"utility","description":"免费开放"},{"id":"tag_util_reserve","name":"需预约","category":"utility","description":"需要提前预约"},{"id":"tag_util_must","name":"必打卡","category":"utility","description":"必去景点"},{"id":"tag_util_viral","name":"网红","category":"utility","description":"网红打卡地"},{"id":"tag_meta_classic","name":"经典","category":"meta_tag","description":"经典景点"},{"id":"tag_meta_new","name":"新晋","category":"meta_tag","description":"新晋热门"},{"id":"tag_taste_fresh","name":"鲜","category":"taste","description":"鲜美"},{"id":"tag_taste_sweet","name":"甜","category":"taste","description":"甜口"},{"id":"tag_taste_savory","name":"咸鲜","category":"taste","description":"咸鲜口味"},{"id":"tag_dish_cantonese","name":"粤菜","category":"dish_type","description":"广东菜系"},{"id":"tag_dish_chaoshan","name":"潮汕菜","category":"dish_type","description":"潮汕风味"},{"id":"tag_dish_seafood","name":"海鲜","category":"dish_type","description":"海鲜料理"},{"id":"tag_dish_snack","name":"小吃","category":"dish_type","description":"街头小吃"},{"id":"tag_dish_dessert","name":"甜品","category":"dish_type","description":"糖水甜品"}]},"attractions":{"version":"3.2.0","last_updated":"2026-05-05","attractions":[{"id":"attr_window_world","name":"世界之窗","subtype":"全球名胜微缩景观·5A级景区","rating":4.5,"ranking":1,"tags":["tag_type_theme_park","tag_util_must","tag_util_viral","tag_time_evening","tag_fac_subway","tag_aud_family","tag_aud_couple","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":360,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_ww_01"],"opinion_ids":[],"warning_ids":["warn_ww_01"]},{"id":"attr_happy_valley","name":"欢乐谷","subtype":"大型主题乐园·5A级景区","rating":4.6,"ranking":2,"tags":["tag_type_theme_park","tag_util_must","tag_int_hard","tag_fac_subway","tag_aud_family","tag_aud_friends","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":480,"height_requirement":{"min_cm":null,"max_cm":null,"note":"部分项目有身高限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":true,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_hv_01"],"opinion_ids":[],"warning_ids":["warn_hv_01"]},{"id":"attr_dameisha","name":"大梅沙海滨公园","subtype":"深圳八景之一·免费海滨浴场","rating":4.4,"ranking":3,"tags":["tag_type_nature","tag_util_must","tag_util_free","tag_time_afternoon","tag_fac_subway","tag_aud_family","tag_aud_couple","tag_meta_classic","tag_zone_yantian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":240,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_yantian"],"indoor":false,"water_splash":true,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_dms_01"],"opinion_ids":[],"warning_ids":[]},{"id":"attr_shenzhen_bay","name":"深圳湾公园","subtype":"13公里滨海步道·观鸟胜地","rating":4.7,"ranking":4,"tags":["tag_type_nature","tag_util_must","tag_util_free","tag_time_evening","tag_fac_subway","tag_aud_couple","tag_aud_solo","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_szb_01"],"opinion_ids":[],"warning_ids":[]},{"id":"attr_lianhua_mountain","name":"莲花山公园","subtype":"深圳CBD最佳观景点","rating":4.5,"ranking":5,"tags":["tag_type_nature","tag_type_landmark","tag_util_must","tag_util_free","tag_time_evening","tag_fac_subway","tag_aud_family","tag_meta_classic","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":120,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_lh_01"],"opinion_ids":[],"warning_ids":[]},{"id":"attr_dongmen","name":"东门老街","subtype":"深圳最老牌商业步行街","rating":4.0,"ranking":6,"tags":["tag_type_foodstreet","tag_util_must","tag_util_free","tag_time_night","tag_fac_subway","tag_aud_friends","tag_aud_couple","tag_meta_classic","tag_zone_luohu"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_luohu"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_dm_01"],"opinion_ids":[],"warning_ids":["warn_dm_01"]},{"id":"attr_happy_harbor","name":"欢乐港湾","subtype":"湾区之光摩天轮·滨海文化公园","rating":4.6,"ranking":7,"tags":["tag_type_landmark","tag_util_viral","tag_time_evening","tag_fac_subway","tag_aud_couple","tag_aud_family","tag_meta_new","tag_zone_baoan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_baoan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_hhb_01"],"opinion_ids":[],"warning_ids":[]},{"id":"attr_shenzhen_museum","name":"深圳博物馆","subtype":"了解深圳历史文化的最佳场所","rating":4.4,"ranking":8,"tags":["tag_type_museum","tag_util_free","tag_util_reserve","tag_time_morning","tag_fac_subway","tag_aud_family","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":150,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":true,"water_splash":false,"single_rider":false,"has_photo":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":["warn_sm_01"]},{"id":"attr_dapeng_fort","name":"大鹏所城","subtype":"明清海防要塞·600年历史","rating":4.3,"ranking":9,"tags":["tag_type_culture","tag_util_free","tag_time_morning","tag_fac_subway","tag_aud_couple","tag_meta_classic","tag_zone_dapeng"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_dapeng"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},{"id":"attr_sea_world","name":"海上世界","subtype":"明华轮·滨海休闲综合体","rating":4.4,"ranking":10,"tags":["tag_type_landmark","tag_util_free","tag_time_night","tag_fac_subway","tag_aud_couple","tag_aud_friends","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":150,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},{"id":"attr_huaqiangbei","name":"华强北","subtype":"中国电子第一街·数码天堂","rating":4.0,"ranking":11,"tags":["tag_type_foodstreet","tag_util_free","tag_fac_subway","tag_aud_friends","tag_aud_solo","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":120,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":true,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},{"id":"attr_gankeng","name":"甘坑古镇","subtype":"百年客家古村·文创小镇","rating":4.2,"ranking":12,"tags":["tag_type_culture","tag_util_free","tag_time_afternoon","tag_fac_subway","tag_aud_couple","tag_meta_new","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]}]},"shows":{"version":"3.2.0","last_updated":"2026-05-05","shows":[{"id":"show_light_show","name":"市民中心灯光秀","tags":["tag_time_night","tag_util_must","tag_meta_new","tag_zone_futian"],"schedule":{"frequency":"每周五、六及节假日","example_times":["19:30","20:30"],"duration_minutes":15,"note":"需提前预约，最佳观赏点在莲花山山顶或市民中心广场"},"route":null,"tips":["提前30分钟到达占位","莲花山山顶视野最佳但需爬山","市民中心广场人多但不用爬山","带好充电宝和饮用水"],"highlights":["深圳CBD夜景灯光秀","大鹏展翅建筑灯光","激光与音乐配合"],"location":"福田中心区市民中心","zone_ids":["tag_zone_futian"],"opinion_ids":[],"warning_ids":["warn_ls_01"],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},{"id":"show_water_show","name":"海上世界音乐喷泉","tags":["tag_time_night","tag_util_free","tag_zone_nanshan"],"schedule":{"frequency":"每天","example_times":["19:00","20:00","21:00"],"duration_minutes":15,"note":"具体时间以现场公告为准"},"route":null,"tips":["提前15分钟到达占位","明华轮前广场是最佳观赏点","喷泉配合灯光和音乐效果很棒","周边有很多餐厅可以边吃边等"],"highlights":["海上明华轮背景","音乐喷泉表演","滨海夜景"],"location":"南山区海上世界明华轮前","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},{"id":"show_ww_night","name":"世界之窗夜场灯光秀","tags":["tag_time_night","tag_util_must","tag_zone_nanshan"],"schedule":{"frequency":"每天","example_times":["20:00"],"duration_minutes":60,"note":"夜场票更划算，可欣赏灯光秀"},"route":null,"tips":["购买夜场票性价比更高","埃菲尔铁塔灯光秀是亮点","晚上温度较低带件外套","夜场人比白天少很多"],"highlights":["埃菲尔铁塔灯光","世界建筑微缩景观夜景","异国风情表演"],"location":"南山区世界之窗","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},{"id":"show_bird_watching","name":"深圳湾观鸟季","tags":["tag_time_morning","tag_meta_seasonal","tag_zone_nanshan"],"schedule":{"frequency":"每年10月至次年4月","example_times":["7:00-10:00","16:00-18:00"],"duration_minutes":120,"note":"候鸟迁徙季节最佳"},"route":{"start":"深圳湾公园地铁站","path":"沿滨海栈道徒步观鸟","viewing_advice":"携带望远镜，保持安静，不要惊扰鸟类"},"tips":["携带望远镜观鸟效果更佳","早晨和傍晚是观鸟最佳时间","候鸟种类包括海鸥、赤颈鸭、白鹭等","深圳湾公园站D2出口最近"],"highlights":["候鸟迁徙","红树林生态","深圳湾大桥背景"],"location":"深圳湾公园滨海栈道","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":true,"source_files":["sf_01"]}]},"restaurants":{"version":"3.2.0","last_updated":"2026-05-05","restaurants":[{"id":"rest_runyuan","name":"润园四季椰子鸡","tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_sweet","tag_util_must","tag_aud_family","tag_aud_couple","tag_zone_futian"],"recommended_dish_ids":["dish_yeziji","dish_weishao_fan"],"location":"福田卓越世纪中心店（多家分店）","review_ids":["rest_rev_01"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_futian"],"average_price":120,"indoor":true,"business_hours":"11:00-22:00","source_files":["sf_01"]},{"id":"rest_guangming","name":"光明招待所","tags":["tag_dish_cantonese","tag_taste_savory","tag_util_must","tag_meta_classic","tag_zone_baoan"],"recommended_dish_ids":["dish_ruge","dish_churu","dish_yumi"],"location":"光明区法政北路26号","review_ids":["rest_rev_02"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_baoan"],"average_price":100,"indoor":true,"business_hours":"10:30-21:00","source_files":["sf_01"]},{"id":"rest_baheli","name":"八合里海记牛肉店","tags":["tag_dish_chaoshan","tag_taste_fresh","tag_util_must","tag_aud_friends","tag_aud_family","tag_zone_nanshan"],"recommended_dish_ids":["dish_shuashuairou","dish_diaolong","dish_niurouwan"],"location":"南山店（多家分店）","review_ids":["rest_rev_03"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_nanshan"],"average_price":100,"indoor":true,"business_hours":"11:00-23:00","source_files":["sf_01"]},{"id":"rest_diandude","name":"点都德","tags":["tag_dish_cantonese","tag_taste_savory","tag_aud_family","tag_meta_classic","tag_zone_luohu"],"recommended_dish_ids":["dish_xiajiao","dish_hongmichang","dish_fengzhao"],"location":"罗湖国贸店（多家分店）","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_luohu"],"average_price":80,"indoor":true,"business_hours":"8:00-22:00","source_files":["sf_01"]},{"id":"rest_sha_jing","name":"沙井蚝村大排档","tags":["tag_dish_seafood","tag_taste_fresh","tag_util_must","tag_zone_baoan"],"recommended_dish_ids":["dish_kaosheng","dish_qingzheng","dish_suanrong"],"location":"宝安区沙井蚝村","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_baoan"],"average_price":150,"indoor":false,"business_hours":"17:00-次日02:00","source_files":["sf_01"]},{"id":"rest_weiji","name":"威记肠粉王","tags":["tag_dish_snack","tag_taste_savory","tag_meta_classic","tag_zone_luohu"],"recommended_dish_ids":["dish_changfen","dish_xiaren"],"location":"罗湖区翠竹街道华丽路","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_luohu"],"average_price":25,"indoor":true,"business_hours":"6:00-14:00","source_files":["sf_01"]},{"id":"rest_lifang","name":"荔芳传统糖水铺","tags":["tag_dish_dessert","tag_taste_sweet","tag_util_viral","tag_zone_nanshan"],"recommended_dish_ids":["dish_tangshui","dish_shuangpinai"],"location":"南山区荔芳一街111号","review_ids":["rest_rev_04"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_nanshan"],"average_price":20,"indoor":true,"business_hours":"14:00-23:00","source_files":["sf_01"]},{"id":"rest_chenguangji","name":"澳门陈光记烧味饭店","tags":["tag_dish_cantonese","tag_taste_savory","tag_zone_futian"],"recommended_dish_ids":["dish_shaoe","dish_boluobao"],"location":"福田区泰然四路103号","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_futian"],"average_price":60,"indoor":true,"business_hours":"10:00-22:00","source_files":["sf_01"]}]},"shortcuts":{"version":"3.2.0","last_updated":"2026-05-05","shortcuts":[{"id":"sc_ww_to_hv","name":"世界之窗到欢乐谷近路","from":"世界之窗","to":"欢乐谷","route":"从世界之窗正门出，沿深南大道向东步行约5分钟即达欢乐谷正门，两景区相邻","savings":"节省打车费，步行仅需5分钟","avoid_mistake":"不要绕路去坐地铁，两个景区就在隔壁","condition":"适合连续游玩两个景区的游客","tags":["tag_zone_nanshan","tag_int_easy"],"source_files":["sf_01"]},{"id":"sc_szb_to_seaworld","name":"深圳湾到海上世界","from":"深圳湾公园","to":"海上世界","route":"从深圳湾公园沿滨海栈道向东步行约30分钟，或乘坐地铁2号线从湾厦站到海上世界站","savings":"步行可欣赏沿途海景","avoid_mistake":"傍晚步行最佳，可以看日落","condition":"天气好时推荐步行","tags":["tag_zone_nanshan","tag_int_easy","tag_time_evening"],"source_files":["sf_01"]},{"id":"sc_dameisha_parking","name":"大梅沙停车省钱攻略","from":"大梅沙景区","to":"附近停车场","route":"不要停景区停车场（贵且满），可停在奥特莱斯停车场，消费满额可免费停车，然后步行5分钟到海滩","savings":"停车费省一半以上","avoid_mistake":"节假日景区停车场很早就会满","condition":"自驾游客适用","tags":["tag_zone_yantian","tag_fac_parking"],"source_files":["sf_01"]}]},"itineraries":{"version":"3.2.0","last_updated":"2026-05-05","itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","description":"打卡深圳最经典的地标和海滨风光","tags":["tag_util_must","tag_int_medium"],"principles":["上午打卡地标","下午海滨休闲","傍晚看日落","晚上看灯光秀"],"source_files":["sf_01"],"time_slots":[{"period":"上午","items":[{"time":"09:00","action":"抵达世界之窗，购买门票入园","note":"地铁1/2号线世界之窗站","attraction_ids":["attr_window_world"],"show_ids":[],"restaurant_ids":[]},{"time":"09:30","action":"游览世界之窗微缩景观","note":"推荐埃菲尔铁塔、金字塔","attraction_ids":["attr_window_world"],"show_ids":[],"restaurant_ids":[]}]},{"period":"中午","items":[{"time":"12:00","action":"午餐：润园四季椰子鸡","note":"世界之窗附近","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_runyuan"]}]},{"period":"下午","items":[{"time":"14:00","action":"前往深圳湾公园","note":"地铁2号线湾厦站","attraction_ids":["attr_shenzhen_bay"],"show_ids":[],"restaurant_ids":[]},{"time":"14:30","action":"漫步滨海栈道，远眺香港","note":"可骑行或步行","attraction_ids":["attr_shenzhen_bay"],"show_ids":[],"restaurant_ids":[]}]},{"period":"傍晚","items":[{"time":"17:30","action":"前往莲花山公园","note":"地铁3号线莲花村站","attraction_ids":["attr_lianhua_mountain"],"show_ids":[],"restaurant_ids":[]},{"time":"18:00","action":"登顶俯瞰深圳CBD","note":"邓小平铜像广场","attraction_ids":["attr_lianhua_mountain"],"show_ids":[],"restaurant_ids":[]}]},{"period":"晚上","items":[{"time":"19:30","action":"观看市民中心灯光秀","note":"需提前预约","attraction_ids":[],"show_ids":["show_light_show"],"restaurant_ids":[]},{"time":"20:30","action":"晚餐：点都德广式茶点","note":"福田CBD附近","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_diandude"]}]}]},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","description":"深度体验深圳的都市魅力和海滨风情","tags":["tag_util_must","tag_int_medium","tag_aud_couple"],"principles":["Day1都市线","Day2海滨线","每晚吃特色","预留充足时间"],"source_files":["sf_01"],"time_slots":[{"period":"Day1上午","items":[{"time":"09:00","action":"欢乐谷游玩","note":"建议早到避开人流","attraction_ids":["attr_happy_valley"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day1中午","items":[{"time":"12:30","action":"午餐：八合里潮汕牛肉火锅","note":"南山店","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_baheli"]}]},{"period":"Day1下午","items":[{"time":"14:30","action":"深圳博物馆","note":"提前预约","attraction_ids":["attr_shenzhen_museum"],"show_ids":[],"restaurant_ids":[]},{"time":"16:30","action":"华强北逛街","note":"数码产品天堂","attraction_ids":["attr_huaqiangbei"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day1晚上","items":[{"time":"18:30","action":"晚餐：东门老街小吃","note":"各种深圳小吃","attraction_ids":["attr_dongmen"],"show_ids":[],"restaurant_ids":[]},{"time":"20:00","action":"逛东门夜市","note":"深圳最老牌商业街","attraction_ids":["attr_dongmen"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2上午","items":[{"time":"08:00","action":"前往大梅沙","note":"地铁8号线直达","attraction_ids":["attr_dameisha"],"show_ids":[],"restaurant_ids":[]},{"time":"09:00","action":"大梅沙海滨游玩","note":"沙滩踏浪、看海景","attraction_ids":["attr_dameisha"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2中午","items":[{"time":"12:00","action":"午餐：盐田海鲜街","note":"新鲜海鲜大餐","attraction_ids":[],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2下午","items":[{"time":"14:00","action":"前往欢乐港湾","note":"地铁5号线宝华站","attraction_ids":["attr_happy_harbor"],"show_ids":[],"restaurant_ids":[]},{"time":"15:00","action":"湾区之光摩天轮","note":"深圳最高摩天轮","attraction_ids":["attr_happy_harbor"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2晚上","items":[{"time":"18:00","action":"晚餐：光明乳鸽","note":"深圳必吃美食","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_guangming"]},{"time":"20:00","action":"海上世界音乐喷泉","note":"免费观赏","attraction_ids":["attr_sea_world"],"show_ids":["show_water_show"],"restaurant_ids":[]}]}]}]},"tips":{"version":"3.2.0","last_updated":"2026-05-05","tips":[{"id":"tip_ww_ticket","category":"购票技巧","title":"世界之窗夜场票更划算","content":"世界之窗日场票220元，夜场票85元（17:00后入园）。夜场可以欣赏灯光秀，人少且温度适宜。建议傍晚入园，既能看日落又能看夜景。","tags":["tag_util_must","tag_zone_nanshan"],"attraction_ids":["attr_window_world"],"opinion_ids":[],"source_files":["sf_01"]},{"id":"tip_dameisha_time","category":"时间技巧","title":"大梅沙最佳游玩时间","content":"大梅沙夏季人多，建议上午9点前到达。每年10月8日至次年5月免预约入园，其他时间需要提前在美丽深圳公众号预约。周末和节假日人非常多，建议工作日前往。","tags":["tag_util_free","tag_util_reserve","tag_zone_yantian"],"attraction_ids":["attr_dameisha"],"opinion_ids":[],"source_files":["sf_01"]},{"id":"tip_light_show","category":"预约技巧","title":"市民中心灯光秀预约攻略","content":"市民中心灯光秀每周五、六及节假日举办，需提前在福田文体通公众号预约。最佳观赏点在莲花山山顶（需爬山20分钟）或市民中心广场。建议提前30分钟到达占位。","tags":["tag_util_reserve","tag_time_night","tag_zone_futian"],"attraction_ids":[],"opinion_ids":[],"source_files":["sf_01"]},{"id":"tip_shenzhen_subway","category":"交通技巧","title":"深圳地铁出行全攻略","content":"深圳地铁覆盖主要景点，下载深圳通APP或微信小程序扫码乘车。1号线贯穿罗湖-福田-南山，2号线到世界之窗、欢乐谷、深圳湾，8号线到大梅沙。运营时间6:00-23:00，高峰期避开1/2/5/11号线。","tags":["tag_fac_subway"],"attraction_ids":[],"opinion_ids":[],"source_files":["sf_01"]},{"id":"tip_dongmen_food","category":"美食技巧","title":"东门老街美食打卡顺序","content":"东门老街美食众多，推荐路线：地铁老街站A出口→东门町美食街→太阳百货→茂业百货。必吃：章鱼小丸子、烤生蚝、双皮奶、肠粉。注意保管好随身物品，人多拥挤。","tags":["tag_fac_food","tag_zone_luohu"],"attraction_ids":["attr_dongmen"],"opinion_ids":[],"source_files":["sf_01"]}]},"warnings":{"version":"3.2.0","last_updated":"2026-05-05","warnings":[{"id":"warn_ww_01","category":"景点避雷","content":"世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。","severity":"medium","alternative":"选择工作日前往或购买夜场票","alternative_details":"夜场票人少且便宜，可以欣赏灯光秀","tags":["tag_util_must","tag_zone_nanshan"],"attraction_ids":["attr_window_world"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]},{"id":"warn_hv_01","category":"景点避雷","content":"欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。","severity":"low","alternative":"选择适合儿童的项目游玩","alternative_details":"欢乐谷有专门的儿童游乐区","tags":["tag_aud_family","tag_zone_nanshan"],"attraction_ids":["attr_happy_valley"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]},{"id":"warn_dm_01","category":"景点避雷","content":"东门老街人多拥挤，注意保管好随身物品，谨防小偷。","severity":"medium","alternative":"选择上午时段前往，人少相对安全","alternative_details":"上午10点前人流较少","tags":["tag_zone_luohu"],"attraction_ids":["attr_dongmen"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_luohu"],"source_files":["sf_01"]},{"id":"warn_ls_01","category":"演出避雷","content":"市民中心灯光秀需要提前预约，临时前往可能无法入场。","severity":"high","alternative":"提前在福田文体通公众号预约","alternative_details":"每周五、六及节假日举办，建议提前3天预约","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":[],"restaurant_ids":[],"show_ids":["show_light_show"],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]},{"id":"warn_sm_01","category":"景点避雷","content":"深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。","severity":"high","alternative":"提前在深圳博物馆公众号预约","alternative_details":"周二至周日9:00-17:00开放，16:30停止入场","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":["attr_shenzhen_museum"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]}]},"preparations":{"version":"3.2.0","last_updated":"2026-05-05","source_files":["sf_01"],"ticket_prices":{"note":"深圳部分景点收费，部分免费","tiers":[{"type":"免费景点","price":0,"description":"大梅沙、深圳湾公园、莲花山公园、东门老街、甘坑古镇、海上世界"},{"type":"主题乐园","price":220,"description":"世界之窗日场220元，夜场85元；欢乐谷日场230元"},{"type":"摩天轮","price":150,"description":"湾区之光摩天轮150元/人"}],"express_pass":{"note":"部分景点支持快速通行","options":[{"type":"世界之窗快速通行","price":100,"description":"可优先体验热门项目"}]}},"parking":{"options":[{"type":"大梅沙景区停车场","price":20,"unit":"次"},{"type":"奥特莱斯停车场","price":10,"unit":"小时","description":"消费满额可免费"},{"type":"市区商场停车场","price":10,"unit":"小时"}]},"locker":{"self_service":[{"type":"景区寄存柜","price":5,"unit":"小时","size":"小柜可放背包，大柜可放行李箱"}],"ride_locker":{"description":"欢乐谷等景区提供寄存服务","price":"5-10元/次"},"baggage_service":{"description":"深圳北站、深圳站有行李寄存","price":"10-20元/件/天"}},"rental":{"wheelchair":{"price":0,"unit":"免费","location":"主要景区游客中心"},"stroller":[{"type":"景区婴儿车","price":0,"unit":"免费或押金","location":"主要景区游客中心"}]},"park_rules":{"reentry":"大梅沙等开放式景区可多次进出；博物馆当日可多次进出","food_policy":"景区内允许自带食物，部分室内场馆禁止饮食"},"transportation":{"subway":{"lines":["1号线","2号线","3号线","4号线","5号线","6号线","7号线","8号线","9号线","10号线","11号线"],"station":"世界之窗站（1/2号线）、深圳湾公园站（9号线）、大梅沙站（8号线）","best_exit":"各景点地铁出口详见攻略","security_advice":"高峰期人多注意保管随身物品"},"taxi_arrival":[{"location":"深圳宝安机场","note":"地铁11号线直达市区"},{"location":"深圳北站","note":"地铁4/5/6号线换乘"}],"taxi_departure":[{"location":"福田CBD","note":"打车最方便"}],"taxi_cost":"深圳出租车起步价10元/2公里，网约车价格相近","taxi_tips":["高峰期（7:30-9:00, 17:30-19:00）建议地铁出行","机场到市区建议坐地铁11号线","大梅沙节假日交通拥堵，建议地铁"]},"clothing":{"must_wear":"舒适的步行鞋","must_bring":"防晒霜、遮阳帽、雨伞","forbidden":"无特殊禁忌","note":"深圳气候温暖，夏季炎热注意防暑；海滨游玩带好泳衣和拖鞋"},"essential_items":[{"item":"身份证","purpose":"部分景点需实名预约"},{"item":"充电宝","purpose":"拍照导航耗电快"},{"item":"防晒霜","purpose":"深圳阳光强烈"},{"item":"泳衣拖鞋","purpose":"大梅沙等海滨游玩"}],"prohibited_items":[{"item":"无人机","reason":"部分景区禁止飞行"}],"pre_trip_checklist":[{"item":"预约大梅沙（如需）","purpose":"旺季需提前预约"},{"item":"预约灯光秀","purpose":"市民中心灯光秀需预约"},{"item":"下载深圳通APP","purpose":"方便乘坐地铁公交"}],"best_dates":{"off_peak_seasons":["3-5月（春季，天气舒适）","10-12月（秋季，凉爽宜人）"],"best_weekdays":"周二至周四游客相对较少","weekend_note":"周末人流量大，海滨景点拥挤","holiday_tip":"五一、十一等长假人流量极大，建议错峰"},"crowd_estimation":{"method":"通过地铁客流量判断","formula":"工作日<周末<节假日","thresholds":{"low":"工作日","medium":"周末","high":"节假日","extreme":"黄金周"}},"warning_ids":["warn_ww_01","warn_hv_01","warn_dm_01","warn_ls_01","warn_sm_01"]},"dishes":{"version":"3.2.0","last_updated":"2026-05-05","dishes":[{"id":"dish_yeziji","name":"椰子鸡","restaurant_ids":["rest_runyuan"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_sweet","tag_util_must"],"zone_ids":["tag_zone_futian"],"price":128,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_ruge","name":"光明红烧乳鸽","restaurant_ids":["rest_guangming"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_savory","tag_util_must"],"zone_ids":["tag_zone_baoan"],"price":48,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_shuashuairou","name":"潮汕牛肉火锅","restaurant_ids":["rest_baheli"],"alternatives":[],"tags":["tag_dish_chaoshan","tag_taste_fresh","tag_util_must"],"zone_ids":["tag_zone_nanshan"],"price":88,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_xiajiao","name":"虾饺皇","restaurant_ids":["rest_diandude"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_savory"],"zone_ids":["tag_zone_luohu"],"price":28,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_kaosheng","name":"炭烤生蚝","restaurant_ids":["rest_sha_jing"],"alternatives":[],"tags":["tag_dish_seafood","tag_taste_fresh","tag_taste_savory","tag_util_must"],"zone_ids":["tag_zone_baoan"],"price":12,"is_seasonal":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_changfen","name":"广式肠粉","restaurant_ids":["rest_weiji"],"alternatives":[],"tags":["tag_dish_snack","tag_taste_savory","tag_meta_classic"],"zone_ids":["tag_zone_luohu"],"price":15,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_tangshui","name":"传统糖水","restaurant_ids":["rest_lifang"],"alternatives":[],"tags":["tag_dish_dessert","tag_taste_sweet","tag_util_viral"],"zone_ids":["tag_zone_nanshan"],"price":18,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},{"id":"dish_shaoe","name":"烧鹅","restaurant_ids":["rest_chenguangji"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_savory"],"zone_ids":["tag_zone_futian"],"price":58,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]}]},"reviews":{"version":"3.2.0","last_updated":"2026-05-05","reviews":[{"id":"rev_ww_01","target_type":"attraction","target_id":"attr_window_world","content":"世界之窗很震撼，一天看遍全球名胜，埃菲尔铁塔拍照很出片。夜场灯光秀更美，建议买夜场票。","sentiment":"positive","source_files":["sf_01"]},{"id":"rev_hv_01","target_type":"attraction","target_id":"attr_happy_valley","content":"欢乐谷刺激项目很多，雪域雄鹰过山车太刺激了！建议工作日去，人少不用排队。","sentiment":"positive","source_files":["sf_01"]},{"id":"rev_dms_01","target_type":"attraction","target_id":"attr_dameisha","content":"大梅沙沙滩很干净，海水清澈，夏天人很多，建议早上去。现在地铁8号线直达很方便。","sentiment":"mixed","source_files":["sf_01"]},{"id":"rev_szb_01","target_type":"attraction","target_id":"attr_shenzhen_bay","content":"深圳湾公园太美了！傍晚来散步看日落，还能远眺香港。13公里滨海栈道很适合骑行。","sentiment":"positive","source_files":["sf_01"]},{"id":"rev_lh_01","target_type":"attraction","target_id":"attr_lianhua_mountain","content":"莲花山公园是俯瞰深圳CBD的最佳地点，邓小平铜像广场视野开阔，夜景也很美。","sentiment":"positive","source_files":["sf_01"]},{"id":"rev_dm_01","target_type":"attraction","target_id":"attr_dongmen","content":"东门老街人太多了，商业化严重，但小吃确实多。注意保管好随身物品。","sentiment":"mixed","source_files":["sf_01"]},{"id":"rest_rev_01","target_type":"restaurant","target_id":"rest_runyuan","content":"润园四季椰子鸡太好吃了！汤底清甜，鸡肉嫩滑，配上沙姜酱油绝了。","sentiment":"positive","source_files":["sf_01"]},{"id":"rest_rev_02","target_type":"restaurant","target_id":"rest_guangming","content":"光明乳鸽名不虚传，皮脆肉嫩，一口咬下去汁水四溢。牛初乳也很浓郁。","sentiment":"positive","source_files":["sf_01"]},{"id":"rest_rev_03","target_type":"restaurant","target_id":"rest_baheli","content":"八合里牛肉火锅很正宗，牛肉现切现涮，吊龙和匙柄必点！沙茶酱是灵魂。","sentiment":"positive","source_files":["sf_01"]},{"id":"rest_rev_04","target_type":"restaurant","target_id":"rest_lifang","content":"荔芳糖水铺料很足，甜度刚好，高圆圆同款打卡成功！","sentiment":"positive","source_files":["sf_01"]}]},"opinions":{"version":"3.2.0","last_updated":"2026-05-05","opinions":[{"id":"op_ww_01","target_type":"attraction","target_id":"attr_window_world","stance":"pro","claim":"世界之窗是深圳必去景点","reasoning":"世界之窗是深圳的地标性景点，可以一天看遍全球130多个名胜微缩景观，拍照很出片，夜场灯光秀更是绝美。虽然门票不便宜，但体验独特，值得打卡。","source_files":["sf_01"]},{"id":"op_ww_02","target_type":"attraction","target_id":"attr_window_world","stance":"contra","claim":"世界之窗性价比不高","reasoning":"世界之窗门票220元比较贵，而且只是微缩景观，不如直接去看真实的景点。节假日人太多，排队时间长，体验一般。","source_files":["sf_01"]},{"id":"op_dms_01","target_type":"attraction","target_id":"attr_dameisha","stance":"pro","claim":"大梅沙是深圳最佳海滨浴场","reasoning":"大梅沙是深圳八景之一，沙滩干净，海水清澈，而且免费！地铁8号线直达，交通方便。适合全家出游，是深圳人周末度假的首选。","source_files":["sf_01"]},{"id":"op_yeziji_01","target_type":"dish","target_id":"dish_yeziji","stance":"pro","claim":"椰子鸡是深圳必吃美食","reasoning":"椰子鸡被称为深圳市菜，润园四季的椰子鸡用海南椰青和文昌鸡现做，汤底清甜，鸡肉嫩滑，是深圳最具代表性的美食。","source_files":["sf_01"]}]},"_maps":{"attractions":{"attr_window_world":{"id":"attr_window_world","name":"世界之窗","subtype":"全球名胜微缩景观·5A级景区","rating":4.5,"ranking":1,"tags":["tag_type_theme_park","tag_util_must","tag_util_viral","tag_time_evening","tag_fac_subway","tag_aud_family","tag_aud_couple","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":360,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_ww_01"],"opinion_ids":[],"warning_ids":["warn_ww_01"]},"attr_happy_valley":{"id":"attr_happy_valley","name":"欢乐谷","subtype":"大型主题乐园·5A级景区","rating":4.6,"ranking":2,"tags":["tag_type_theme_park","tag_util_must","tag_int_hard","tag_fac_subway","tag_aud_family","tag_aud_friends","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":480,"height_requirement":{"min_cm":null,"max_cm":null,"note":"部分项目有身高限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":true,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_hv_01"],"opinion_ids":[],"warning_ids":["warn_hv_01"]},"attr_dameisha":{"id":"attr_dameisha","name":"大梅沙海滨公园","subtype":"深圳八景之一·免费海滨浴场","rating":4.4,"ranking":3,"tags":["tag_type_nature","tag_util_must","tag_util_free","tag_time_afternoon","tag_fac_subway","tag_aud_family","tag_aud_couple","tag_meta_classic","tag_zone_yantian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":240,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_yantian"],"indoor":false,"water_splash":true,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_dms_01"],"opinion_ids":[],"warning_ids":[]},"attr_shenzhen_bay":{"id":"attr_shenzhen_bay","name":"深圳湾公园","subtype":"13公里滨海步道·观鸟胜地","rating":4.7,"ranking":4,"tags":["tag_type_nature","tag_util_must","tag_util_free","tag_time_evening","tag_fac_subway","tag_aud_couple","tag_aud_solo","tag_meta_classic","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_szb_01"],"opinion_ids":[],"warning_ids":[]},"attr_lianhua_mountain":{"id":"attr_lianhua_mountain","name":"莲花山公园","subtype":"深圳CBD最佳观景点","rating":4.5,"ranking":5,"tags":["tag_type_nature","tag_type_landmark","tag_util_must","tag_util_free","tag_time_evening","tag_fac_subway","tag_aud_family","tag_meta_classic","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":120,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_lh_01"],"opinion_ids":[],"warning_ids":[]},"attr_dongmen":{"id":"attr_dongmen","name":"东门老街","subtype":"深圳最老牌商业步行街","rating":4.0,"ranking":6,"tags":["tag_type_foodstreet","tag_util_must","tag_util_free","tag_time_night","tag_fac_subway","tag_aud_friends","tag_aud_couple","tag_meta_classic","tag_zone_luohu"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_luohu"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_dm_01"],"opinion_ids":[],"warning_ids":["warn_dm_01"]},"attr_happy_harbor":{"id":"attr_happy_harbor","name":"欢乐港湾","subtype":"湾区之光摩天轮·滨海文化公园","rating":4.6,"ranking":7,"tags":["tag_type_landmark","tag_util_viral","tag_time_evening","tag_fac_subway","tag_aud_couple","tag_aud_family","tag_meta_new","tag_zone_baoan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_baoan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":["rev_hhb_01"],"opinion_ids":[],"warning_ids":[]},"attr_shenzhen_museum":{"id":"attr_shenzhen_museum","name":"深圳博物馆","subtype":"了解深圳历史文化的最佳场所","rating":4.4,"ranking":8,"tags":["tag_type_museum","tag_util_free","tag_util_reserve","tag_time_morning","tag_fac_subway","tag_aud_family","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":150,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":true,"water_splash":false,"single_rider":false,"has_photo":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":["warn_sm_01"]},"attr_dapeng_fort":{"id":"attr_dapeng_fort","name":"大鹏所城","subtype":"明清海防要塞·600年历史","rating":4.3,"ranking":9,"tags":["tag_type_culture","tag_util_free","tag_time_morning","tag_fac_subway","tag_aud_couple","tag_meta_classic","tag_zone_dapeng"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_dapeng"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},"attr_sea_world":{"id":"attr_sea_world","name":"海上世界","subtype":"明华轮·滨海休闲综合体","rating":4.4,"ranking":10,"tags":["tag_type_landmark","tag_util_free","tag_time_night","tag_fac_subway","tag_aud_couple","tag_aud_friends","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":150,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},"attr_huaqiangbei":{"id":"attr_huaqiangbei","name":"华强北","subtype":"中国电子第一街·数码天堂","rating":4.0,"ranking":11,"tags":["tag_type_foodstreet","tag_util_free","tag_fac_subway","tag_aud_friends","tag_aud_solo","tag_zone_futian"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":120,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_futian"],"indoor":true,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]},"attr_gankeng":{"id":"attr_gankeng","name":"甘坑古镇","subtype":"百年客家古村·文创小镇","rating":4.2,"ranking":12,"tags":["tag_type_culture","tag_util_free","tag_time_afternoon","tag_fac_subway","tag_aud_couple","tag_meta_new","tag_zone_nanshan"],"locker":null,"queue_strategy":null,"seat_advice":[],"duration_minutes":180,"height_requirement":{"min_cm":null,"max_cm":null,"note":"无限制"},"zone_ids":["tag_zone_nanshan"],"indoor":false,"water_splash":false,"single_rider":false,"has_photo":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[],"warning_ids":[]}},"shows":{"show_light_show":{"id":"show_light_show","name":"市民中心灯光秀","tags":["tag_time_night","tag_util_must","tag_meta_new","tag_zone_futian"],"schedule":{"frequency":"每周五、六及节假日","example_times":["19:30","20:30"],"duration_minutes":15,"note":"需提前预约，最佳观赏点在莲花山山顶或市民中心广场"},"route":null,"tips":["提前30分钟到达占位","莲花山山顶视野最佳但需爬山","市民中心广场人多但不用爬山","带好充电宝和饮用水"],"highlights":["深圳CBD夜景灯光秀","大鹏展翅建筑灯光","激光与音乐配合"],"location":"福田中心区市民中心","zone_ids":["tag_zone_futian"],"opinion_ids":[],"warning_ids":["warn_ls_01"],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},"show_water_show":{"id":"show_water_show","name":"海上世界音乐喷泉","tags":["tag_time_night","tag_util_free","tag_zone_nanshan"],"schedule":{"frequency":"每天","example_times":["19:00","20:00","21:00"],"duration_minutes":15,"note":"具体时间以现场公告为准"},"route":null,"tips":["提前15分钟到达占位","明华轮前广场是最佳观赏点","喷泉配合灯光和音乐效果很棒","周边有很多餐厅可以边吃边等"],"highlights":["海上明华轮背景","音乐喷泉表演","滨海夜景"],"location":"南山区海上世界明华轮前","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},"show_ww_night":{"id":"show_ww_night","name":"世界之窗夜场灯光秀","tags":["tag_time_night","tag_util_must","tag_zone_nanshan"],"schedule":{"frequency":"每天","example_times":["20:00"],"duration_minutes":60,"note":"夜场票更划算，可欣赏灯光秀"},"route":null,"tips":["购买夜场票性价比更高","埃菲尔铁塔灯光秀是亮点","晚上温度较低带件外套","夜场人比白天少很多"],"highlights":["埃菲尔铁塔灯光","世界建筑微缩景观夜景","异国风情表演"],"location":"南山区世界之窗","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":false,"source_files":["sf_01"]},"show_bird_watching":{"id":"show_bird_watching","name":"深圳湾观鸟季","tags":["tag_time_morning","tag_meta_seasonal","tag_zone_nanshan"],"schedule":{"frequency":"每年10月至次年4月","example_times":["7:00-10:00","16:00-18:00"],"duration_minutes":120,"note":"候鸟迁徙季节最佳"},"route":{"start":"深圳湾公园地铁站","path":"沿滨海栈道徒步观鸟","viewing_advice":"携带望远镜，保持安静，不要惊扰鸟类"},"tips":["携带望远镜观鸟效果更佳","早晨和傍晚是观鸟最佳时间","候鸟种类包括海鸥、赤颈鸭、白鹭等","深圳湾公园站D2出口最近"],"highlights":["候鸟迁徙","红树林生态","深圳湾大桥背景"],"location":"深圳湾公园滨海栈道","zone_ids":["tag_zone_nanshan"],"opinion_ids":[],"warning_ids":[],"review_ids":[],"language":"无","is_seasonal":true,"source_files":["sf_01"]}},"restaurants":{"rest_runyuan":{"id":"rest_runyuan","name":"润园四季椰子鸡","tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_sweet","tag_util_must","tag_aud_family","tag_aud_couple","tag_zone_futian"],"recommended_dish_ids":["dish_yeziji","dish_weishao_fan"],"location":"福田卓越世纪中心店（多家分店）","review_ids":["rest_rev_01"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_futian"],"average_price":120,"indoor":true,"business_hours":"11:00-22:00","source_files":["sf_01"]},"rest_guangming":{"id":"rest_guangming","name":"光明招待所","tags":["tag_dish_cantonese","tag_taste_savory","tag_util_must","tag_meta_classic","tag_zone_baoan"],"recommended_dish_ids":["dish_ruge","dish_churu","dish_yumi"],"location":"光明区法政北路26号","review_ids":["rest_rev_02"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_baoan"],"average_price":100,"indoor":true,"business_hours":"10:30-21:00","source_files":["sf_01"]},"rest_baheli":{"id":"rest_baheli","name":"八合里海记牛肉店","tags":["tag_dish_chaoshan","tag_taste_fresh","tag_util_must","tag_aud_friends","tag_aud_family","tag_zone_nanshan"],"recommended_dish_ids":["dish_shuashuairou","dish_diaolong","dish_niurouwan"],"location":"南山店（多家分店）","review_ids":["rest_rev_03"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_nanshan"],"average_price":100,"indoor":true,"business_hours":"11:00-23:00","source_files":["sf_01"]},"rest_diandude":{"id":"rest_diandude","name":"点都德","tags":["tag_dish_cantonese","tag_taste_savory","tag_aud_family","tag_meta_classic","tag_zone_luohu"],"recommended_dish_ids":["dish_xiajiao","dish_hongmichang","dish_fengzhao"],"location":"罗湖国贸店（多家分店）","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_luohu"],"average_price":80,"indoor":true,"business_hours":"8:00-22:00","source_files":["sf_01"]},"rest_sha_jing":{"id":"rest_sha_jing","name":"沙井蚝村大排档","tags":["tag_dish_seafood","tag_taste_fresh","tag_util_must","tag_zone_baoan"],"recommended_dish_ids":["dish_kaosheng","dish_qingzheng","dish_suanrong"],"location":"宝安区沙井蚝村","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_baoan"],"average_price":150,"indoor":false,"business_hours":"17:00-次日02:00","source_files":["sf_01"]},"rest_weiji":{"id":"rest_weiji","name":"威记肠粉王","tags":["tag_dish_snack","tag_taste_savory","tag_meta_classic","tag_zone_luohu"],"recommended_dish_ids":["dish_changfen","dish_xiaren"],"location":"罗湖区翠竹街道华丽路","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_luohu"],"average_price":25,"indoor":true,"business_hours":"6:00-14:00","source_files":["sf_01"]},"rest_lifang":{"id":"rest_lifang","name":"荔芳传统糖水铺","tags":["tag_dish_dessert","tag_taste_sweet","tag_util_viral","tag_zone_nanshan"],"recommended_dish_ids":["dish_tangshui","dish_shuangpinai"],"location":"南山区荔芳一街111号","review_ids":["rest_rev_04"],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_nanshan"],"average_price":20,"indoor":true,"business_hours":"14:00-23:00","source_files":["sf_01"]},"rest_chenguangji":{"id":"rest_chenguangji","name":"澳门陈光记烧味饭店","tags":["tag_dish_cantonese","tag_taste_savory","tag_zone_futian"],"recommended_dish_ids":["dish_shaoe","dish_boluobao"],"location":"福田区泰然四路103号","review_ids":[],"opinion_ids":[],"warning_ids":[],"zone_ids":["tag_zone_futian"],"average_price":60,"indoor":true,"business_hours":"10:00-22:00","source_files":["sf_01"]}},"dishes":{"dish_yeziji":{"id":"dish_yeziji","name":"椰子鸡","restaurant_ids":["rest_runyuan"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_sweet","tag_util_must"],"zone_ids":["tag_zone_futian"],"price":128,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_ruge":{"id":"dish_ruge","name":"光明红烧乳鸽","restaurant_ids":["rest_guangming"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_savory","tag_util_must"],"zone_ids":["tag_zone_baoan"],"price":48,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_shuashuairou":{"id":"dish_shuashuairou","name":"潮汕牛肉火锅","restaurant_ids":["rest_baheli"],"alternatives":[],"tags":["tag_dish_chaoshan","tag_taste_fresh","tag_util_must"],"zone_ids":["tag_zone_nanshan"],"price":88,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_xiajiao":{"id":"dish_xiajiao","name":"虾饺皇","restaurant_ids":["rest_diandude"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_fresh","tag_taste_savory"],"zone_ids":["tag_zone_luohu"],"price":28,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_kaosheng":{"id":"dish_kaosheng","name":"炭烤生蚝","restaurant_ids":["rest_sha_jing"],"alternatives":[],"tags":["tag_dish_seafood","tag_taste_fresh","tag_taste_savory","tag_util_must"],"zone_ids":["tag_zone_baoan"],"price":12,"is_seasonal":true,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_changfen":{"id":"dish_changfen","name":"广式肠粉","restaurant_ids":["rest_weiji"],"alternatives":[],"tags":["tag_dish_snack","tag_taste_savory","tag_meta_classic"],"zone_ids":["tag_zone_luohu"],"price":15,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_tangshui":{"id":"dish_tangshui","name":"传统糖水","restaurant_ids":["rest_lifang"],"alternatives":[],"tags":["tag_dish_dessert","tag_taste_sweet","tag_util_viral"],"zone_ids":["tag_zone_nanshan"],"price":18,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]},"dish_shaoe":{"id":"dish_shaoe","name":"烧鹅","restaurant_ids":["rest_chenguangji"],"alternatives":[],"tags":["tag_dish_cantonese","tag_taste_savory"],"zone_ids":["tag_zone_futian"],"price":58,"is_seasonal":false,"source_files":["sf_01"],"review_ids":[],"opinion_ids":[]}},"tips":{"tip_ww_ticket":{"id":"tip_ww_ticket","category":"购票技巧","title":"世界之窗夜场票更划算","content":"世界之窗日场票220元，夜场票85元（17:00后入园）。夜场可以欣赏灯光秀，人少且温度适宜。建议傍晚入园，既能看日落又能看夜景。","tags":["tag_util_must","tag_zone_nanshan"],"attraction_ids":["attr_window_world"],"opinion_ids":[],"source_files":["sf_01"]},"tip_dameisha_time":{"id":"tip_dameisha_time","category":"时间技巧","title":"大梅沙最佳游玩时间","content":"大梅沙夏季人多，建议上午9点前到达。每年10月8日至次年5月免预约入园，其他时间需要提前在美丽深圳公众号预约。周末和节假日人非常多，建议工作日前往。","tags":["tag_util_free","tag_util_reserve","tag_zone_yantian"],"attraction_ids":["attr_dameisha"],"opinion_ids":[],"source_files":["sf_01"]},"tip_light_show":{"id":"tip_light_show","category":"预约技巧","title":"市民中心灯光秀预约攻略","content":"市民中心灯光秀每周五、六及节假日举办，需提前在福田文体通公众号预约。最佳观赏点在莲花山山顶（需爬山20分钟）或市民中心广场。建议提前30分钟到达占位。","tags":["tag_util_reserve","tag_time_night","tag_zone_futian"],"attraction_ids":[],"opinion_ids":[],"source_files":["sf_01"]},"tip_shenzhen_subway":{"id":"tip_shenzhen_subway","category":"交通技巧","title":"深圳地铁出行全攻略","content":"深圳地铁覆盖主要景点，下载深圳通APP或微信小程序扫码乘车。1号线贯穿罗湖-福田-南山，2号线到世界之窗、欢乐谷、深圳湾，8号线到大梅沙。运营时间6:00-23:00，高峰期避开1/2/5/11号线。","tags":["tag_fac_subway"],"attraction_ids":[],"opinion_ids":[],"source_files":["sf_01"]},"tip_dongmen_food":{"id":"tip_dongmen_food","category":"美食技巧","title":"东门老街美食打卡顺序","content":"东门老街美食众多，推荐路线：地铁老街站A出口→东门町美食街→太阳百货→茂业百货。必吃：章鱼小丸子、烤生蚝、双皮奶、肠粉。注意保管好随身物品，人多拥挤。","tags":["tag_fac_food","tag_zone_luohu"],"attraction_ids":["attr_dongmen"],"opinion_ids":[],"source_files":["sf_01"]}},"warnings":{"warn_ww_01":{"id":"warn_ww_01","category":"景点避雷","content":"世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。","severity":"medium","alternative":"选择工作日前往或购买夜场票","alternative_details":"夜场票人少且便宜，可以欣赏灯光秀","tags":["tag_util_must","tag_zone_nanshan"],"attraction_ids":["attr_window_world"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]},"warn_hv_01":{"id":"warn_hv_01","category":"景点避雷","content":"欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。","severity":"low","alternative":"选择适合儿童的项目游玩","alternative_details":"欢乐谷有专门的儿童游乐区","tags":["tag_aud_family","tag_zone_nanshan"],"attraction_ids":["attr_happy_valley"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]},"warn_dm_01":{"id":"warn_dm_01","category":"景点避雷","content":"东门老街人多拥挤，注意保管好随身物品，谨防小偷。","severity":"medium","alternative":"选择上午时段前往，人少相对安全","alternative_details":"上午10点前人流较少","tags":["tag_zone_luohu"],"attraction_ids":["attr_dongmen"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_luohu"],"source_files":["sf_01"]},"warn_ls_01":{"id":"warn_ls_01","category":"演出避雷","content":"市民中心灯光秀需要提前预约，临时前往可能无法入场。","severity":"high","alternative":"提前在福田文体通公众号预约","alternative_details":"每周五、六及节假日举办，建议提前3天预约","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":[],"restaurant_ids":[],"show_ids":["show_light_show"],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]},"warn_sm_01":{"id":"warn_sm_01","category":"景点避雷","content":"深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。","severity":"high","alternative":"提前在深圳博物馆公众号预约","alternative_details":"周二至周日9:00-17:00开放，16:30停止入场","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":["attr_shenzhen_museum"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]}},"shortcuts":{"sc_ww_to_hv":{"id":"sc_ww_to_hv","name":"世界之窗到欢乐谷近路","from":"世界之窗","to":"欢乐谷","route":"从世界之窗正门出，沿深南大道向东步行约5分钟即达欢乐谷正门，两景区相邻","savings":"节省打车费，步行仅需5分钟","avoid_mistake":"不要绕路去坐地铁，两个景区就在隔壁","condition":"适合连续游玩两个景区的游客","tags":["tag_zone_nanshan","tag_int_easy"],"source_files":["sf_01"]},"sc_szb_to_seaworld":{"id":"sc_szb_to_seaworld","name":"深圳湾到海上世界","from":"深圳湾公园","to":"海上世界","route":"从深圳湾公园沿滨海栈道向东步行约30分钟，或乘坐地铁2号线从湾厦站到海上世界站","savings":"步行可欣赏沿途海景","avoid_mistake":"傍晚步行最佳，可以看日落","condition":"天气好时推荐步行","tags":["tag_zone_nanshan","tag_int_easy","tag_time_evening"],"source_files":["sf_01"]},"sc_dameisha_parking":{"id":"sc_dameisha_parking","name":"大梅沙停车省钱攻略","from":"大梅沙景区","to":"附近停车场","route":"不要停景区停车场（贵且满），可停在奥特莱斯停车场，消费满额可免费停车，然后步行5分钟到海滩","savings":"停车费省一半以上","avoid_mistake":"节假日景区停车场很早就会满","condition":"自驾游客适用","tags":["tag_zone_yantian","tag_fac_parking"],"source_files":["sf_01"]}},"itineraries":{"itin_shenzhen_1day":{"id":"itin_shenzhen_1day","name":"深圳经典一日游","description":"打卡深圳最经典的地标和海滨风光","tags":["tag_util_must","tag_int_medium"],"principles":["上午打卡地标","下午海滨休闲","傍晚看日落","晚上看灯光秀"],"source_files":["sf_01"],"time_slots":[{"period":"上午","items":[{"time":"09:00","action":"抵达世界之窗，购买门票入园","note":"地铁1/2号线世界之窗站","attraction_ids":["attr_window_world"],"show_ids":[],"restaurant_ids":[]},{"time":"09:30","action":"游览世界之窗微缩景观","note":"推荐埃菲尔铁塔、金字塔","attraction_ids":["attr_window_world"],"show_ids":[],"restaurant_ids":[]}]},{"period":"中午","items":[{"time":"12:00","action":"午餐：润园四季椰子鸡","note":"世界之窗附近","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_runyuan"]}]},{"period":"下午","items":[{"time":"14:00","action":"前往深圳湾公园","note":"地铁2号线湾厦站","attraction_ids":["attr_shenzhen_bay"],"show_ids":[],"restaurant_ids":[]},{"time":"14:30","action":"漫步滨海栈道，远眺香港","note":"可骑行或步行","attraction_ids":["attr_shenzhen_bay"],"show_ids":[],"restaurant_ids":[]}]},{"period":"傍晚","items":[{"time":"17:30","action":"前往莲花山公园","note":"地铁3号线莲花村站","attraction_ids":["attr_lianhua_mountain"],"show_ids":[],"restaurant_ids":[]},{"time":"18:00","action":"登顶俯瞰深圳CBD","note":"邓小平铜像广场","attraction_ids":["attr_lianhua_mountain"],"show_ids":[],"restaurant_ids":[]}]},{"period":"晚上","items":[{"time":"19:30","action":"观看市民中心灯光秀","note":"需提前预约","attraction_ids":[],"show_ids":["show_light_show"],"restaurant_ids":[]},{"time":"20:30","action":"晚餐：点都德广式茶点","note":"福田CBD附近","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_diandude"]}]}]},"itin_shenzhen_2day":{"id":"itin_shenzhen_2day","name":"深圳深度两日游","description":"深度体验深圳的都市魅力和海滨风情","tags":["tag_util_must","tag_int_medium","tag_aud_couple"],"principles":["Day1都市线","Day2海滨线","每晚吃特色","预留充足时间"],"source_files":["sf_01"],"time_slots":[{"period":"Day1上午","items":[{"time":"09:00","action":"欢乐谷游玩","note":"建议早到避开人流","attraction_ids":["attr_happy_valley"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day1中午","items":[{"time":"12:30","action":"午餐：八合里潮汕牛肉火锅","note":"南山店","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_baheli"]}]},{"period":"Day1下午","items":[{"time":"14:30","action":"深圳博物馆","note":"提前预约","attraction_ids":["attr_shenzhen_museum"],"show_ids":[],"restaurant_ids":[]},{"time":"16:30","action":"华强北逛街","note":"数码产品天堂","attraction_ids":["attr_huaqiangbei"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day1晚上","items":[{"time":"18:30","action":"晚餐：东门老街小吃","note":"各种深圳小吃","attraction_ids":["attr_dongmen"],"show_ids":[],"restaurant_ids":[]},{"time":"20:00","action":"逛东门夜市","note":"深圳最老牌商业街","attraction_ids":["attr_dongmen"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2上午","items":[{"time":"08:00","action":"前往大梅沙","note":"地铁8号线直达","attraction_ids":["attr_dameisha"],"show_ids":[],"restaurant_ids":[]},{"time":"09:00","action":"大梅沙海滨游玩","note":"沙滩踏浪、看海景","attraction_ids":["attr_dameisha"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2中午","items":[{"time":"12:00","action":"午餐：盐田海鲜街","note":"新鲜海鲜大餐","attraction_ids":[],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2下午","items":[{"time":"14:00","action":"前往欢乐港湾","note":"地铁5号线宝华站","attraction_ids":["attr_happy_harbor"],"show_ids":[],"restaurant_ids":[]},{"time":"15:00","action":"湾区之光摩天轮","note":"深圳最高摩天轮","attraction_ids":["attr_happy_harbor"],"show_ids":[],"restaurant_ids":[]}]},{"period":"Day2晚上","items":[{"time":"18:00","action":"晚餐：光明乳鸽","note":"深圳必吃美食","attraction_ids":[],"show_ids":[],"restaurant_ids":["rest_guangming"]},{"time":"20:00","action":"海上世界音乐喷泉","note":"免费观赏","attraction_ids":["attr_sea_world"],"show_ids":["show_water_show"],"restaurant_ids":[]}]}]}},"reviews_by_target":{"attr_window_world":[{"id":"rev_ww_01","target_type":"attraction","target_id":"attr_window_world","content":"世界之窗很震撼，一天看遍全球名胜，埃菲尔铁塔拍照很出片。夜场灯光秀更美，建议买夜场票。","sentiment":"positive","source_files":["sf_01"]}],"attr_happy_valley":[{"id":"rev_hv_01","target_type":"attraction","target_id":"attr_happy_valley","content":"欢乐谷刺激项目很多，雪域雄鹰过山车太刺激了！建议工作日去，人少不用排队。","sentiment":"positive","source_files":["sf_01"]}],"attr_dameisha":[{"id":"rev_dms_01","target_type":"attraction","target_id":"attr_dameisha","content":"大梅沙沙滩很干净，海水清澈，夏天人很多，建议早上去。现在地铁8号线直达很方便。","sentiment":"mixed","source_files":["sf_01"]}],"attr_shenzhen_bay":[{"id":"rev_szb_01","target_type":"attraction","target_id":"attr_shenzhen_bay","content":"深圳湾公园太美了！傍晚来散步看日落，还能远眺香港。13公里滨海栈道很适合骑行。","sentiment":"positive","source_files":["sf_01"]}],"attr_lianhua_mountain":[{"id":"rev_lh_01","target_type":"attraction","target_id":"attr_lianhua_mountain","content":"莲花山公园是俯瞰深圳CBD的最佳地点，邓小平铜像广场视野开阔，夜景也很美。","sentiment":"positive","source_files":["sf_01"]}],"attr_dongmen":[{"id":"rev_dm_01","target_type":"attraction","target_id":"attr_dongmen","content":"东门老街人太多了，商业化严重，但小吃确实多。注意保管好随身物品。","sentiment":"mixed","source_files":["sf_01"]}],"rest_runyuan":[{"id":"rest_rev_01","target_type":"restaurant","target_id":"rest_runyuan","content":"润园四季椰子鸡太好吃了！汤底清甜，鸡肉嫩滑，配上沙姜酱油绝了。","sentiment":"positive","source_files":["sf_01"]}],"rest_guangming":[{"id":"rest_rev_02","target_type":"restaurant","target_id":"rest_guangming","content":"光明乳鸽名不虚传，皮脆肉嫩，一口咬下去汁水四溢。牛初乳也很浓郁。","sentiment":"positive","source_files":["sf_01"]}],"rest_baheli":[{"id":"rest_rev_03","target_type":"restaurant","target_id":"rest_baheli","content":"八合里牛肉火锅很正宗，牛肉现切现涮，吊龙和匙柄必点！沙茶酱是灵魂。","sentiment":"positive","source_files":["sf_01"]}],"rest_lifang":[{"id":"rest_rev_04","target_type":"restaurant","target_id":"rest_lifang","content":"荔芳糖水铺料很足，甜度刚好，高圆圆同款打卡成功！","sentiment":"positive","source_files":["sf_01"]}]},"opinions_by_target":{"attr_window_world":[{"id":"op_ww_01","target_type":"attraction","target_id":"attr_window_world","stance":"pro","claim":"世界之窗是深圳必去景点","reasoning":"世界之窗是深圳的地标性景点，可以一天看遍全球130多个名胜微缩景观，拍照很出片，夜场灯光秀更是绝美。虽然门票不便宜，但体验独特，值得打卡。","source_files":["sf_01"]},{"id":"op_ww_02","target_type":"attraction","target_id":"attr_window_world","stance":"contra","claim":"世界之窗性价比不高","reasoning":"世界之窗门票220元比较贵，而且只是微缩景观，不如直接去看真实的景点。节假日人太多，排队时间长，体验一般。","source_files":["sf_01"]}],"attr_dameisha":[{"id":"op_dms_01","target_type":"attraction","target_id":"attr_dameisha","stance":"pro","claim":"大梅沙是深圳最佳海滨浴场","reasoning":"大梅沙是深圳八景之一，沙滩干净，海水清澈，而且免费！地铁8号线直达，交通方便。适合全家出游，是深圳人周末度假的首选。","source_files":["sf_01"]}],"dish_yeziji":[{"id":"op_yeziji_01","target_type":"dish","target_id":"dish_yeziji","stance":"pro","claim":"椰子鸡是深圳必吃美食","reasoning":"椰子鸡被称为深圳市菜，润园四季的椰子鸡用海南椰青和文昌鸡现做，汤底清甜，鸡肉嫩滑，是深圳最具代表性的美食。","source_files":["sf_01"]}]},"warnings_by_target":{"attr_window_world":[{"id":"warn_ww_01","category":"景点避雷","content":"世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。","severity":"medium","alternative":"选择工作日前往或购买夜场票","alternative_details":"夜场票人少且便宜，可以欣赏灯光秀","tags":["tag_util_must","tag_zone_nanshan"],"attraction_ids":["attr_window_world"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]}],"attr_happy_valley":[{"id":"warn_hv_01","category":"景点避雷","content":"欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。","severity":"low","alternative":"选择适合儿童的项目游玩","alternative_details":"欢乐谷有专门的儿童游乐区","tags":["tag_aud_family","tag_zone_nanshan"],"attraction_ids":["attr_happy_valley"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_nanshan"],"source_files":["sf_01"]}],"attr_dongmen":[{"id":"warn_dm_01","category":"景点避雷","content":"东门老街人多拥挤，注意保管好随身物品，谨防小偷。","severity":"medium","alternative":"选择上午时段前往，人少相对安全","alternative_details":"上午10点前人流较少","tags":["tag_zone_luohu"],"attraction_ids":["attr_dongmen"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_luohu"],"source_files":["sf_01"]}],"show_light_show":[{"id":"warn_ls_01","category":"演出避雷","content":"市民中心灯光秀需要提前预约，临时前往可能无法入场。","severity":"high","alternative":"提前在福田文体通公众号预约","alternative_details":"每周五、六及节假日举办，建议提前3天预约","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":[],"restaurant_ids":[],"show_ids":["show_light_show"],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]}],"attr_shenzhen_museum":[{"id":"warn_sm_01","category":"景点避雷","content":"深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。","severity":"high","alternative":"提前在深圳博物馆公众号预约","alternative_details":"周二至周日9:00-17:00开放，16:30停止入场","tags":["tag_util_reserve","tag_zone_futian"],"attraction_ids":["attr_shenzhen_museum"],"restaurant_ids":[],"show_ids":[],"shortcut_ids":[],"zone_ids":["tag_zone_futian"],"source_files":["sf_01"]}]}},"_indexes":{"tag_index":{"tag_type_theme_park":{"attractions":["attr_window_world","attr_happy_valley"]},"tag_util_must":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen"],"shows":["show_light_show","show_ww_night"],"restaurants":["rest_runyuan","rest_guangming","rest_baheli","rest_sha_jing"],"dishes":["dish_yeziji","dish_ruge","dish_shuashuairou","dish_kaosheng"],"tips":["tip_ww_ticket"],"warnings":["warn_ww_01"],"itineraries":["itin_shenzhen_1day","itin_shenzhen_2day"]},"tag_util_viral":{"attractions":["attr_window_world","attr_happy_harbor"],"restaurants":["rest_lifang"],"dishes":["dish_tangshui"]},"tag_time_evening":{"attractions":["attr_window_world","attr_shenzhen_bay","attr_lianhua_mountain","attr_happy_harbor"],"shortcuts":["sc_szb_to_seaworld"]},"tag_fac_subway":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_happy_harbor","attr_shenzhen_museum","attr_dapeng_fort","attr_sea_world","attr_huaqiangbei","attr_gankeng"],"tips":["tip_shenzhen_subway"]},"tag_aud_family":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_lianhua_mountain","attr_happy_harbor","attr_shenzhen_museum"],"restaurants":["rest_runyuan","rest_baheli","rest_diandude"],"warnings":["warn_hv_01"]},"tag_aud_couple":{"attractions":["attr_window_world","attr_dameisha","attr_shenzhen_bay","attr_dongmen","attr_happy_harbor","attr_dapeng_fort","attr_sea_world","attr_gankeng"],"restaurants":["rest_runyuan"],"itineraries":["itin_shenzhen_2day"]},"tag_meta_classic":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_dapeng_fort"],"restaurants":["rest_guangming","rest_diandude","rest_weiji"],"dishes":["dish_changfen"]},"tag_zone_nanshan":{"attractions":["attr_window_world","attr_happy_valley","attr_shenzhen_bay","attr_sea_world","attr_gankeng"],"shows":["show_water_show","show_ww_night","show_bird_watching"],"restaurants":["rest_baheli","rest_lifang"],"shortcuts":["sc_ww_to_hv","sc_szb_to_seaworld"],"tips":["tip_ww_ticket"],"warnings":["warn_ww_01","warn_hv_01"]},"tag_int_hard":{"attractions":["attr_happy_valley"]},"tag_aud_friends":{"attractions":["attr_happy_valley","attr_dongmen","attr_sea_world","attr_huaqiangbei"],"restaurants":["rest_baheli"]},"tag_type_nature":{"attractions":["attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain"]},"tag_util_free":{"attractions":["attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_shenzhen_museum","attr_dapeng_fort","attr_sea_world","attr_huaqiangbei","attr_gankeng"],"shows":["show_water_show"],"tips":["tip_dameisha_time"]},"tag_time_afternoon":{"attractions":["attr_dameisha","attr_gankeng"]},"tag_zone_yantian":{"attractions":["attr_dameisha"],"shortcuts":["sc_dameisha_parking"],"tips":["tip_dameisha_time"]},"tag_aud_solo":{"attractions":["attr_shenzhen_bay","attr_huaqiangbei"]},"tag_type_landmark":{"attractions":["attr_lianhua_mountain","attr_happy_harbor","attr_sea_world"]},"tag_zone_futian":{"attractions":["attr_lianhua_mountain","attr_shenzhen_museum","attr_huaqiangbei"],"shows":["show_light_show"],"restaurants":["rest_runyuan","rest_chenguangji"],"tips":["tip_light_show"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_type_foodstreet":{"attractions":["attr_dongmen","attr_huaqiangbei"]},"tag_time_night":{"attractions":["attr_dongmen","attr_sea_world"],"shows":["show_light_show","show_water_show","show_ww_night"],"tips":["tip_light_show"]},"tag_zone_luohu":{"attractions":["attr_dongmen"],"restaurants":["rest_diandude","rest_weiji"],"tips":["tip_dongmen_food"],"warnings":["warn_dm_01"]},"tag_meta_new":{"attractions":["attr_happy_harbor","attr_gankeng"],"shows":["show_light_show"]},"tag_zone_baoan":{"attractions":["attr_happy_harbor"],"restaurants":["rest_guangming","rest_sha_jing"]},"tag_type_museum":{"attractions":["attr_shenzhen_museum"]},"tag_util_reserve":{"attractions":["attr_shenzhen_museum"],"tips":["tip_dameisha_time","tip_light_show"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_time_morning":{"attractions":["attr_shenzhen_museum","attr_dapeng_fort"],"shows":["show_bird_watching"]},"tag_type_culture":{"attractions":["attr_dapeng_fort","attr_gankeng"]},"tag_zone_dapeng":{"attractions":["attr_dapeng_fort"]},"tag_meta_seasonal":{"shows":["show_bird_watching"]},"tag_dish_cantonese":{"restaurants":["rest_runyuan","rest_guangming","rest_diandude","rest_chenguangji"],"dishes":["dish_yeziji","dish_ruge","dish_xiajiao","dish_shaoe"]},"tag_taste_fresh":{"restaurants":["rest_runyuan","rest_baheli","rest_sha_jing"],"dishes":["dish_yeziji","dish_shuashuairou","dish_xiajiao","dish_kaosheng"]},"tag_taste_sweet":{"restaurants":["rest_runyuan","rest_lifang"],"dishes":["dish_yeziji","dish_tangshui"]},"tag_taste_savory":{"restaurants":["rest_guangming","rest_diandude","rest_weiji","rest_chenguangji"],"dishes":["dish_ruge","dish_xiajiao","dish_kaosheng","dish_changfen","dish_shaoe"]},"tag_dish_chaoshan":{"restaurants":["rest_baheli"],"dishes":["dish_shuashuairou"]},"tag_dish_seafood":{"restaurants":["rest_sha_jing"],"dishes":["dish_kaosheng"]},"tag_dish_snack":{"restaurants":["rest_weiji"],"dishes":["dish_changfen"]},"tag_dish_dessert":{"restaurants":["rest_lifang"],"dishes":["dish_tangshui"]},"tag_int_easy":{"shortcuts":["sc_ww_to_hv","sc_szb_to_seaworld"]},"tag_fac_parking":{"shortcuts":["sc_dameisha_parking"]},"tag_fac_food":{"tips":["tip_dongmen_food"]},"tag_int_medium":{"itineraries":["itin_shenzhen_1day","itin_shenzhen_2day"]}},"zone_index":{"tag_zone_nanshan":{"attractions":["attr_window_world","attr_happy_valley","attr_shenzhen_bay","attr_sea_world","attr_gankeng"],"shows":["show_water_show","show_ww_night","show_bird_watching"],"restaurants":["rest_baheli","rest_lifang"],"dishes":["dish_shuashuairou","dish_tangshui"],"warnings":["warn_ww_01","warn_hv_01"]},"tag_zone_yantian":{"attractions":["attr_dameisha"]},"tag_zone_futian":{"attractions":["attr_lianhua_mountain","attr_shenzhen_museum","attr_huaqiangbei"],"shows":["show_light_show"],"restaurants":["rest_runyuan","rest_chenguangji"],"dishes":["dish_yeziji","dish_shaoe"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_zone_luohu":{"attractions":["attr_dongmen"],"restaurants":["rest_diandude","rest_weiji"],"dishes":["dish_xiajiao","dish_changfen"],"warnings":["warn_dm_01"]},"tag_zone_baoan":{"attractions":["attr_happy_harbor"],"restaurants":["rest_guangming","rest_sha_jing"],"dishes":["dish_ruge","dish_kaosheng"]},"tag_zone_dapeng":{"attractions":["attr_dapeng_fort"]}},"backrefs":{"attr_window_world":{"tips":[{"id":"tip_ww_ticket","title":"世界之窗夜场票更划算"}],"warnings":[{"id":"warn_ww_01","content":"世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。","severity":"medium","category":"景点避雷","alternative":"选择工作日前往或购买夜场票"}],"reviews":[{"id":"rev_ww_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"09:00","action":"抵达世界之窗，购买门票入园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"09:30","action":"游览世界之窗微缩景观"}]},"attr_dameisha":{"tips":[{"id":"tip_dameisha_time","title":"大梅沙最佳游玩时间"}],"warnings":[],"reviews":[{"id":"rev_dms_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"08:00","action":"前往大梅沙"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"09:00","action":"大梅沙海滨游玩"}]},"attr_dongmen":{"tips":[{"id":"tip_dongmen_food","title":"东门老街美食打卡顺序"}],"warnings":[{"id":"warn_dm_01","content":"东门老街人多拥挤，注意保管好随身物品，谨防小偷。","severity":"medium","category":"景点避雷","alternative":"选择上午时段前往，人少相对安全"}],"reviews":[{"id":"rev_dm_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"18:30","action":"晚餐：东门老街小吃"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"逛东门夜市"}]},"attr_happy_valley":{"tips":[],"warnings":[{"id":"warn_hv_01","content":"欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。","severity":"low","category":"景点避雷","alternative":"选择适合儿童的项目游玩"}],"reviews":[{"id":"rev_hv_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"09:00","action":"欢乐谷游玩"}]},"show_light_show":{"tips":[],"warnings":[{"id":"warn_ls_01","content":"市民中心灯光秀需要提前预约，临时前往可能无法入场。","severity":"high","category":"演出避雷","alternative":"提前在福田文体通公众号预约"}],"reviews":[],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"19:30","action":"观看市民中心灯光秀"}]},"attr_shenzhen_museum":{"tips":[],"warnings":[{"id":"warn_sm_01","content":"深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。","severity":"high","category":"景点避雷","alternative":"提前在深圳博物馆公众号预约"}],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"14:30","action":"深圳博物馆"}]},"attr_shenzhen_bay":{"tips":[],"warnings":[],"reviews":[{"id":"rev_szb_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"14:00","action":"前往深圳湾公园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"14:30","action":"漫步滨海栈道，远眺香港"}]},"attr_lianhua_mountain":{"tips":[],"warnings":[],"reviews":[{"id":"rev_lh_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"17:30","action":"前往莲花山公园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"18:00","action":"登顶俯瞰深圳CBD"}]},"rest_runyuan":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"12:00","action":"午餐：润园四季椰子鸡"}]},"rest_guangming":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_02","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"18:00","action":"晚餐：光明乳鸽"}]},"rest_baheli":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_03","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"12:30","action":"午餐：八合里潮汕牛肉火锅"}]},"rest_lifang":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_04","title":"","rating":null}],"itineraries":[]},"rest_diandude":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"20:30","action":"晚餐：点都德广式茶点"}]},"attr_huaqiangbei":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"16:30","action":"华强北逛街"}]},"attr_happy_harbor":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"14:00","action":"前往欢乐港湾"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"15:00","action":"湾区之光摩天轮"}]},"attr_sea_world":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"海上世界音乐喷泉"}]},"show_water_show":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"海上世界音乐喷泉"}]}},"alternative_index":{"attr_window_world":[{"type":"warning","entity_id":"warn_ww_01","name":"","reason":"选择工作日前往或购买夜场票"}],"attr_happy_valley":[{"type":"warning","entity_id":"warn_hv_01","name":"","reason":"选择适合儿童的项目游玩"}],"attr_dongmen":[{"type":"warning","entity_id":"warn_dm_01","name":"","reason":"选择上午时段前往，人少相对安全"}],"show_light_show":[{"type":"warning","entity_id":"warn_ls_01","name":"","reason":"提前在福田文体通公众号预约"}],"attr_shenzhen_museum":[{"type":"warning","entity_id":"warn_sm_01","name":"","reason":"提前在深圳博物馆公众号预约"}]}}};
+const INDEXES = {"tag_index":{"tag_type_theme_park":{"attractions":["attr_window_world","attr_happy_valley"]},"tag_util_must":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen"],"shows":["show_light_show","show_ww_night"],"restaurants":["rest_runyuan","rest_guangming","rest_baheli","rest_sha_jing"],"dishes":["dish_yeziji","dish_ruge","dish_shuashuairou","dish_kaosheng"],"tips":["tip_ww_ticket"],"warnings":["warn_ww_01"],"itineraries":["itin_shenzhen_1day","itin_shenzhen_2day"]},"tag_util_viral":{"attractions":["attr_window_world","attr_happy_harbor"],"restaurants":["rest_lifang"],"dishes":["dish_tangshui"]},"tag_time_evening":{"attractions":["attr_window_world","attr_shenzhen_bay","attr_lianhua_mountain","attr_happy_harbor"],"shortcuts":["sc_szb_to_seaworld"]},"tag_fac_subway":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_happy_harbor","attr_shenzhen_museum","attr_dapeng_fort","attr_sea_world","attr_huaqiangbei","attr_gankeng"],"tips":["tip_shenzhen_subway"]},"tag_aud_family":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_lianhua_mountain","attr_happy_harbor","attr_shenzhen_museum"],"restaurants":["rest_runyuan","rest_baheli","rest_diandude"],"warnings":["warn_hv_01"]},"tag_aud_couple":{"attractions":["attr_window_world","attr_dameisha","attr_shenzhen_bay","attr_dongmen","attr_happy_harbor","attr_dapeng_fort","attr_sea_world","attr_gankeng"],"restaurants":["rest_runyuan"],"itineraries":["itin_shenzhen_2day"]},"tag_meta_classic":{"attractions":["attr_window_world","attr_happy_valley","attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_dapeng_fort"],"restaurants":["rest_guangming","rest_diandude","rest_weiji"],"dishes":["dish_changfen"]},"tag_zone_nanshan":{"attractions":["attr_window_world","attr_happy_valley","attr_shenzhen_bay","attr_sea_world","attr_gankeng"],"shows":["show_water_show","show_ww_night","show_bird_watching"],"restaurants":["rest_baheli","rest_lifang"],"shortcuts":["sc_ww_to_hv","sc_szb_to_seaworld"],"tips":["tip_ww_ticket"],"warnings":["warn_ww_01","warn_hv_01"]},"tag_int_hard":{"attractions":["attr_happy_valley"]},"tag_aud_friends":{"attractions":["attr_happy_valley","attr_dongmen","attr_sea_world","attr_huaqiangbei"],"restaurants":["rest_baheli"]},"tag_type_nature":{"attractions":["attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain"]},"tag_util_free":{"attractions":["attr_dameisha","attr_shenzhen_bay","attr_lianhua_mountain","attr_dongmen","attr_shenzhen_museum","attr_dapeng_fort","attr_sea_world","attr_huaqiangbei","attr_gankeng"],"shows":["show_water_show"],"tips":["tip_dameisha_time"]},"tag_time_afternoon":{"attractions":["attr_dameisha","attr_gankeng"]},"tag_zone_yantian":{"attractions":["attr_dameisha"],"shortcuts":["sc_dameisha_parking"],"tips":["tip_dameisha_time"]},"tag_aud_solo":{"attractions":["attr_shenzhen_bay","attr_huaqiangbei"]},"tag_type_landmark":{"attractions":["attr_lianhua_mountain","attr_happy_harbor","attr_sea_world"]},"tag_zone_futian":{"attractions":["attr_lianhua_mountain","attr_shenzhen_museum","attr_huaqiangbei"],"shows":["show_light_show"],"restaurants":["rest_runyuan","rest_chenguangji"],"tips":["tip_light_show"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_type_foodstreet":{"attractions":["attr_dongmen","attr_huaqiangbei"]},"tag_time_night":{"attractions":["attr_dongmen","attr_sea_world"],"shows":["show_light_show","show_water_show","show_ww_night"],"tips":["tip_light_show"]},"tag_zone_luohu":{"attractions":["attr_dongmen"],"restaurants":["rest_diandude","rest_weiji"],"tips":["tip_dongmen_food"],"warnings":["warn_dm_01"]},"tag_meta_new":{"attractions":["attr_happy_harbor","attr_gankeng"],"shows":["show_light_show"]},"tag_zone_baoan":{"attractions":["attr_happy_harbor"],"restaurants":["rest_guangming","rest_sha_jing"]},"tag_type_museum":{"attractions":["attr_shenzhen_museum"]},"tag_util_reserve":{"attractions":["attr_shenzhen_museum"],"tips":["tip_dameisha_time","tip_light_show"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_time_morning":{"attractions":["attr_shenzhen_museum","attr_dapeng_fort"],"shows":["show_bird_watching"]},"tag_type_culture":{"attractions":["attr_dapeng_fort","attr_gankeng"]},"tag_zone_dapeng":{"attractions":["attr_dapeng_fort"]},"tag_meta_seasonal":{"shows":["show_bird_watching"]},"tag_dish_cantonese":{"restaurants":["rest_runyuan","rest_guangming","rest_diandude","rest_chenguangji"],"dishes":["dish_yeziji","dish_ruge","dish_xiajiao","dish_shaoe"]},"tag_taste_fresh":{"restaurants":["rest_runyuan","rest_baheli","rest_sha_jing"],"dishes":["dish_yeziji","dish_shuashuairou","dish_xiajiao","dish_kaosheng"]},"tag_taste_sweet":{"restaurants":["rest_runyuan","rest_lifang"],"dishes":["dish_yeziji","dish_tangshui"]},"tag_taste_savory":{"restaurants":["rest_guangming","rest_diandude","rest_weiji","rest_chenguangji"],"dishes":["dish_ruge","dish_xiajiao","dish_kaosheng","dish_changfen","dish_shaoe"]},"tag_dish_chaoshan":{"restaurants":["rest_baheli"],"dishes":["dish_shuashuairou"]},"tag_dish_seafood":{"restaurants":["rest_sha_jing"],"dishes":["dish_kaosheng"]},"tag_dish_snack":{"restaurants":["rest_weiji"],"dishes":["dish_changfen"]},"tag_dish_dessert":{"restaurants":["rest_lifang"],"dishes":["dish_tangshui"]},"tag_int_easy":{"shortcuts":["sc_ww_to_hv","sc_szb_to_seaworld"]},"tag_fac_parking":{"shortcuts":["sc_dameisha_parking"]},"tag_fac_food":{"tips":["tip_dongmen_food"]},"tag_int_medium":{"itineraries":["itin_shenzhen_1day","itin_shenzhen_2day"]}},"zone_index":{"tag_zone_nanshan":{"attractions":["attr_window_world","attr_happy_valley","attr_shenzhen_bay","attr_sea_world","attr_gankeng"],"shows":["show_water_show","show_ww_night","show_bird_watching"],"restaurants":["rest_baheli","rest_lifang"],"dishes":["dish_shuashuairou","dish_tangshui"],"warnings":["warn_ww_01","warn_hv_01"]},"tag_zone_yantian":{"attractions":["attr_dameisha"]},"tag_zone_futian":{"attractions":["attr_lianhua_mountain","attr_shenzhen_museum","attr_huaqiangbei"],"shows":["show_light_show"],"restaurants":["rest_runyuan","rest_chenguangji"],"dishes":["dish_yeziji","dish_shaoe"],"warnings":["warn_ls_01","warn_sm_01"]},"tag_zone_luohu":{"attractions":["attr_dongmen"],"restaurants":["rest_diandude","rest_weiji"],"dishes":["dish_xiajiao","dish_changfen"],"warnings":["warn_dm_01"]},"tag_zone_baoan":{"attractions":["attr_happy_harbor"],"restaurants":["rest_guangming","rest_sha_jing"],"dishes":["dish_ruge","dish_kaosheng"]},"tag_zone_dapeng":{"attractions":["attr_dapeng_fort"]}},"backrefs":{"attr_window_world":{"tips":[{"id":"tip_ww_ticket","title":"世界之窗夜场票更划算"}],"warnings":[{"id":"warn_ww_01","content":"世界之窗节假日人流量极大，热门项目排队可能超过2小时，建议错峰出行或购买快速通行票。","severity":"medium","category":"景点避雷","alternative":"选择工作日前往或购买夜场票"}],"reviews":[{"id":"rev_ww_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"09:00","action":"抵达世界之窗，购买门票入园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"09:30","action":"游览世界之窗微缩景观"}]},"attr_dameisha":{"tips":[{"id":"tip_dameisha_time","title":"大梅沙最佳游玩时间"}],"warnings":[],"reviews":[{"id":"rev_dms_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"08:00","action":"前往大梅沙"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"09:00","action":"大梅沙海滨游玩"}]},"attr_dongmen":{"tips":[{"id":"tip_dongmen_food","title":"东门老街美食打卡顺序"}],"warnings":[{"id":"warn_dm_01","content":"东门老街人多拥挤，注意保管好随身物品，谨防小偷。","severity":"medium","category":"景点避雷","alternative":"选择上午时段前往，人少相对安全"}],"reviews":[{"id":"rev_dm_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"18:30","action":"晚餐：东门老街小吃"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"逛东门夜市"}]},"attr_happy_valley":{"tips":[],"warnings":[{"id":"warn_hv_01","content":"欢乐谷部分刺激项目有身高限制（1.4米以上），带小孩的游客需提前确认。","severity":"low","category":"景点避雷","alternative":"选择适合儿童的项目游玩"}],"reviews":[{"id":"rev_hv_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"09:00","action":"欢乐谷游玩"}]},"show_light_show":{"tips":[],"warnings":[{"id":"warn_ls_01","content":"市民中心灯光秀需要提前预约，临时前往可能无法入场。","severity":"high","category":"演出避雷","alternative":"提前在福田文体通公众号预约"}],"reviews":[],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"19:30","action":"观看市民中心灯光秀"}]},"attr_shenzhen_museum":{"tips":[],"warnings":[{"id":"warn_sm_01","content":"深圳博物馆周一闭馆，需提前预约，临时前往可能无法入馆。","severity":"high","category":"景点避雷","alternative":"提前在深圳博物馆公众号预约"}],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"14:30","action":"深圳博物馆"}]},"attr_shenzhen_bay":{"tips":[],"warnings":[],"reviews":[{"id":"rev_szb_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"14:00","action":"前往深圳湾公园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"14:30","action":"漫步滨海栈道，远眺香港"}]},"attr_lianhua_mountain":{"tips":[],"warnings":[],"reviews":[{"id":"rev_lh_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"17:30","action":"前往莲花山公园"},{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"18:00","action":"登顶俯瞰深圳CBD"}]},"rest_runyuan":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_01","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"12:00","action":"午餐：润园四季椰子鸡"}]},"rest_guangming":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_02","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"18:00","action":"晚餐：光明乳鸽"}]},"rest_baheli":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_03","title":"","rating":null}],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"12:30","action":"午餐：八合里潮汕牛肉火锅"}]},"rest_lifang":{"tips":[],"warnings":[],"reviews":[{"id":"rest_rev_04","title":"","rating":null}],"itineraries":[]},"rest_diandude":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_1day","name":"深圳经典一日游","time":"20:30","action":"晚餐：点都德广式茶点"}]},"attr_huaqiangbei":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"16:30","action":"华强北逛街"}]},"attr_happy_harbor":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"14:00","action":"前往欢乐港湾"},{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"15:00","action":"湾区之光摩天轮"}]},"attr_sea_world":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"海上世界音乐喷泉"}]},"show_water_show":{"tips":[],"warnings":[],"reviews":[],"itineraries":[{"id":"itin_shenzhen_2day","name":"深圳深度两日游","time":"20:00","action":"海上世界音乐喷泉"}]}},"alternative_index":{"attr_window_world":[{"type":"warning","entity_id":"warn_ww_01","name":"","reason":"选择工作日前往或购买夜场票"}],"attr_happy_valley":[{"type":"warning","entity_id":"warn_hv_01","name":"","reason":"选择适合儿童的项目游玩"}],"attr_dongmen":[{"type":"warning","entity_id":"warn_dm_01","name":"","reason":"选择上午时段前往，人少相对安全"}],"show_light_show":[{"type":"warning","entity_id":"warn_ls_01","name":"","reason":"提前在福田文体通公众号预约"}],"attr_shenzhen_museum":[{"type":"warning","entity_id":"warn_sm_01","name":"","reason":"提前在深圳博物馆公众号预约"}]}};
+
+// ========== 工具函数 ==========
+const $ = id => document.getElementById(id);
+const app = () => $('app');
+
+function find(id, type) { return DATA._maps[type] && DATA._maps[type][id]; }
+function findReviews(targetId) { return DATA._maps.reviews_by_target[targetId] || []; }
+function findOpinions(targetId) { return DATA._maps.opinions_by_target[targetId] || []; }
+function findWarnings(targetId) { return DATA._maps.warnings_by_target[targetId] || []; }
+function zonesHtml(zoneIds) { return (zoneIds || []).map(z => tagLookup(z)).filter(Boolean).join(' · '); }
+function sentimentIcon(s) { return s === 'positive' ? '👍' : s === 'negative' ? '👎' : '🤔'; }
+function sevStyle(sev) { return sev === 'high' ? 'color:var(--red);font-weight:700' : sev === 'medium' ? 'color:var(--orange)' : 'color:var(--sub)'; }
+
+function dishRestaurantName(dish) {
+  return (dish.restaurant_ids || []).map(rid => { const r = find(rid, 'restaurants'); return r ? r.name : ''; }).filter(Boolean)[0] || '';
+}
+
+function tagLookup(tagId) {
+  const t = DATA.tags.tags.find(t => t.id === tagId);
+  if (!t) return '';
+  const catCls = ['zone','intensity','audience','utility','taste','meta_tag'].includes(t.category) ? t.category : '';
+  const cls = 'tag' + (catCls ? ' ' + catCls : '');
+  const click = typeof renderTagContent === 'function' ? ` onclick="nav('tags/${tagId}')"` : '';
+  return `<span class="${cls}${click ? ' clickable' : ''}">${t.name}</span>`;
+}
+
+function getTypeTag(tags) {
+  if (!tags || !tags.length) return '';
+  const typeTag = tags.find(id => {
+    const t = DATA.tags.tags.find(tag => tag.id === id);
+    return t && t.category === 'attraction_type';
+  });
+  return typeTag ? tagLookup(typeTag) : '';
+}
+
+function getTypeIcon(tags) {
+  if (!tags || !tags.length) return '🎤';
+  const typeTag = tags.find(id => {
+    const t = DATA.tags.tags.find(tag => tag.id === id);
+    return t && t.category === 'attraction_type';
+  });
+  const iconMap = {
+    'tag_type_parade': '🎪',
+    'tag_type_live_show': '🎭',
+    'tag_type_light_show': '✨',
+    'tag_type_stunt_show': '🔥',
+    'tag_type_interactive_show': '🤝'
+  };
+  return typeTag && iconMap[typeTag] ? iconMap[typeTag] : '🎤';
+}
+
+function categoryLookup(catId) {
+  const c = DATA.tags.categories.find(c => c.id === catId);
+  return c ? c.name : catId;
+}
+
+function starsHtml(rating) {
+  if (!rating) return '';
+  return '<span class="stars">' + '★'.repeat(rating) + '☆'.repeat(5 - rating) + '</span>';
+}
+
+function severityIcon(sev) {
+  if (sev === 'high') return '🔴';
+  if (sev === 'medium') return '🟠';
+  return '🟡';
+}
+
+function severityHtml(sev) {
+  const cls = sev === 'high' ? 'sev-high' : sev === 'medium' ? 'sev-medium' : 'sev-low';
+  const label = sev === 'high' ? '严重' : sev === 'medium' ? '注意' : '轻微';
+  return `<span class="${cls}">[${label}]</span>`;
+}
+
+function tagsHtml(tagIds, clickable) {
+  if (!tagIds || !tagIds.length) return '';
+  return tagIds.map(id => {
+    const t = DATA.tags.tags.find(t => t.id === id);
+    if (!t) return '';
+    const catCls = ['zone','intensity','audience','utility','taste','meta_tag'].includes(t.category) ? ' ' + t.category : '';
+    const clickCls = clickable ? ' clickable' : '';
+    const onclick = clickable ? ` onclick="nav('tags/${id}')"` : '';
+    return `<span class="tag${catCls}${clickCls}"${onclick}>${t.name}</span>`;
+  }).join('');
+}
+
+// ========== 通用渲染 ==========
+
+const SEV_ORDER = { high: 0, medium: 1, low: 2 };
+const TIP_ICONS = ['💡','⏰','🎒','📱','🎯','🔑'];
+function sortBySeverity(a, b) { return (SEV_ORDER[a.severity] ?? 3) - (SEV_ORDER[b.severity] ?? 3); }
+
+function renderReviews(entityId) {
+  const reviews = findReviews(entityId);
+  if (!reviews || !reviews.length) return '';
+  let html = '<div class="section-title">游客评价</div><div class="card">';
+  const groups = [
+    ['positive', reviews.filter(r => r.sentiment === 'positive'), '👍 好评', 'var(--green)'],
+    ['negative', reviews.filter(r => r.sentiment === 'negative'), '👎 差评', 'var(--red)'],
+    ['mixed', reviews.filter(r => r.sentiment === 'mixed' || r.sentiment === 'neutral'), '🤔 中评', 'var(--orange)']
+  ];
+  groups.forEach(([key, items, label, color]) => {
+    if (!items.length) return;
+    html += `<div style="font-size:12px;color:${color};margin-bottom:4px;margin-top:6px">${label} (${items.length})</div>`;
+    items.forEach(r => { html += `<p>${r.content || ''}</p>`; });
+  });
+  return html + '</div>';
+}
+
+function renderOpinions(entityId) {
+  const opinions = findOpinions(entityId);
+  if (!opinions || !opinions.length) return '';
+  let html = '<div class="section-title">不同观点</div>';
+  opinions.forEach(op => {
+    const cls = op.stance === 'pro' ? 'pro' : 'con';
+    const label = op.stance === 'pro' ? '✅ 正方' : '❌ 反方';
+    html += `<div class="opinion-block"><div class="stance ${cls}">${label}</div><div><b>${op.claim}</b></div><p>${op.reasoning || ''}</p></div>`;
+  });
+  return html;
+}
+
+function renderWarnings(entityId) {
+  const warnings = findWarnings(entityId);
+  if (!warnings || !warnings.length) return '';
+  let html = '<div class="section-title">注意事项</div><div class="card">';
+  warnings.slice().sort(sortBySeverity).forEach(w => { html += `<p>${severityHtml(w.severity)} ${w.content || ''}</p>`; });
+  return html + '</div>';
+}
+
+function renderFilterBar(filterValue, filterFnName) {
+  const zoneTags = DATA.tags.tags.filter(t => t.category === 'zone');
+  let html = '<div class="filter-bar">';
+  html += `<span class="filter-btn ${filterValue === 'all' ? 'active' : ''}" onclick="${filterFnName}('all')">全部</span>`;
+  zoneTags.forEach(t => {
+    html += `<span class="filter-btn ${filterValue === t.id ? 'active' : ''}" onclick="${filterFnName}('${t.id}')">${t.name}</span>`;
+  });
+  return html + '</div>';
+}
+
+function renderEntityLinks(title, type, ids, nameField, icon) {
+  if (!ids || !ids.length) return '';
+  let html = `<div class="section-title">${title}</div>`;
+  ids.forEach(id => {
+    const item = find(id, type);
+    if (item) html += `<div class="list-item" data-type="${type}" onclick="nav('${type}/${id}')"><div class="info"><h4>${icon || ''}${item[nameField] || item.name || item.content || ''}</h4></div><span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+// ========== 路由 ==========
+function nav(page) {
+  location.hash = page;
+}
+
+// ========== 状态管理 ==========
+const filters = { attractions: 'all', shows: 'all', restaurants: 'all', dishes: 'all' };
+function setFilter(key, page, renderFn) {
+  return function(zoneId) {
+    filters[key] = zoneId;
+    app().innerHTML = breadcrumb(page) + renderFn();
+    window.scrollTo(0, 0);
+  };
+}
+const setAttrFilter = setFilter('attractions', 'attractions', renderAttractionList);
+const setShowFilter = setFilter('shows', 'shows', renderShowList);
+const setRestFilter = setFilter('restaurants', 'restaurants', renderRestaurantList);
+const setDishFilter = setFilter('dishes', 'dishes', renderDishList);
+
+// ========== 首页轮播 ==========
+const carousel = { timer: null, idx: 0, touchStartX: 0, touchDeltaX: 0, isSwiping: false };
+function goSlide(idx) {
+  var c = document.getElementById('homeCarousel');
+  if (!c) return;
+  var track = c.querySelector('.carousel-track');
+  var slides = c.querySelectorAll('.carousel-slide');
+  var dots = c.querySelectorAll('.carousel-dot');
+  var total = slides.length;
+  if (idx < 0) idx = total - 1;
+  if (idx >= total) idx = 0;
+  if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+  carousel.idx = idx;
+}
+function startCarousel() {
+  var c = document.getElementById('homeCarousel');
+  if (!c) return;
+  var total = c.querySelectorAll('.carousel-slide').length;
+  if (total <= 1) return;
+  shuffleCarouselContent();
+  carousel.timer = setInterval(function() {
+    goSlide(carousel.idx + 1);
+    shuffleCarouselContent();
+  }, 5000);
+  // 触摸滑动
+  c.addEventListener('touchstart', function(e) { carousel.touchStartX = e.touches[0].clientX; carousel.isSwiping = true; }, {passive: true});
+  c.addEventListener('touchmove', function(e) {
+    if (!carousel.isSwiping) return;
+    carousel.touchDeltaX = e.touches[0].clientX - carousel.touchStartX;
+  }, {passive: true});
+  c.addEventListener('touchend', function() {
+    if (!carousel.isSwiping) return;
+    carousel.isSwiping = false;
+    if (Math.abs(carousel.touchDeltaX) > 40) { goSlide(carousel.touchDeltaX < 0 ? carousel.idx + 1 : carousel.idx - 1); }
+    carousel.touchDeltaX = 0;
+  });
+}
+function stopCarousel() { if (carousel.timer) { clearInterval(carousel.timer); carousel.timer = null; } }
+
+// 后台时轮播内容随机刷新
+function shuffleCarouselContent() {
+  var c = document.getElementById('homeCarousel');
+  if (!c || !DATA || !DATA.tips || !DATA.warnings) return;
+  var allTips = DATA.tips.tips;
+  var allWarns = DATA.warnings.warnings;
+  var allDishes = DATA.dishes.dishes.filter(function(d) { return findReviews(d.id).length > 0; });
+  function pick(arr, n) {
+    var s = arr.slice().sort(function() { return Math.random() - 0.5; });
+    return s.slice(0, n);
+  }
+  var tipIcons = TIP_ICONS;
+  var slides = c.querySelectorAll('.carousel-slide');
+  slides.forEach(function(slide) {
+    var type = slide.getAttribute('data-type');
+    var grid = slide.querySelector('.tip-grid');
+    if (!grid) return;
+    var html = '';
+    if (type === 'tip') {
+      var items = pick(allTips, 6);
+      items.forEach(function(t, i) {
+        html += '<div class="tip-card" onclick="nav(\'tips/' + t.id + '\')"><div class="tip-icon">' + (tipIcons[i] || '💡') + '</div><h4>' + (t.title || t.category) + '</h4><p>' + (t.content || '').slice(0, 60) + '</p></div>';
+      });
+    } else if (type === 'warn') {
+      var items = pick(allWarns, 6);
+      items.forEach(function(w) {
+        var sevCls = sevStyle(w.severity);
+        html += '<div class="tip-card warn-card" onclick="nav(\'warnings/' + w.id + '\')"><div class="tip-icon" style="' + sevCls + '">' + severityIcon(w.severity) + '</div><h4>' + (w.content || '').slice(0, 20) + '</h4><p>' + (w.content || '').slice(0, 60) + '</p></div>';
+      });
+    } else if (type === 'dish') {
+      var items = pick(allDishes, 6);
+      items.forEach(function(d) {
+        var restName = dishRestaurantName(d);
+        var reviews = findReviews(d.id);
+        var sentiment = reviews[0] ? reviews[0].sentiment : '';
+        var sentIcon = sentimentIcon(sentiment);
+        html += '<div class="tip-card dish-card" onclick="nav(\'dishes/' + d.id + '\')"><div class="tip-icon">' + sentIcon + '</div><h4>' + d.name + '</h4><p>' + restName + '</p></div>';
+      });
+    }
+    grid.innerHTML = html;
+  });
+}
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) { stopCarousel(); }
+  else {
+    shuffleCarouselContent();
+    var c = document.getElementById('homeCarousel');
+    if (c && c.querySelectorAll('.carousel-slide').length > 1) startCarousel();
+  }
+});
+
+// ========== 面包屑导航 ==========
+const PAGE_META = {
+  home:        {label: '首页', parent: null},
+  attractions: {label: '游乐项目', parent: 'home'},
+  shows:       {label: '演出', parent: 'home'},
+  show_schedule: {label: '演出时间轴', parent: 'shows'},
+  restaurants: {label: '餐厅', parent: 'home'},
+  dishes:      {label: '菜品', parent: 'restaurants'},
+  itineraries: {label: '行程', parent: 'home'},
+  tips:        {label: '技巧', parent: 'home'},
+  warnings:    {label: '避雷', parent: 'home'},
+  preparations:{label: '行前准备', parent: 'home'},
+  shortcuts:   {label: '小道', parent: 'home'},
+  tags:        {label: '标签', parent: 'home'},
+  more:        {label: '更多', parent: 'home'},
+};
+
+function breadcrumb(page, param) {
+  const meta = PAGE_META[page];
+  if (!meta) return '';
+  const crumbs = [];
+  if (param && meta) {
+    // 详情页：当前type就是列表页
+    crumbs.push({hash: page, label: meta.label});
+  }
+  // 向上追溯到首页
+  let cur = meta;
+  while (cur && cur.parent) {
+    const parentMeta = PAGE_META[cur.parent];
+    if (parentMeta) crumbs.push({hash: cur.parent, label: parentMeta.label});
+    cur = parentMeta;
+  }
+  crumbs.reverse();
+  // 最后一项是当前页
+  const current = crumbs.pop();
+  return '<div class="breadcrumb">' + crumbs.map(c => `<span class="bc-item" onclick="nav('${c.hash}')">${c.label}</span>`).join('<span class="bc-sep">/</span>') + `<span class="bc-here">${current ? current.label : page}</span></div>`;
+}
+
+function resolveEntityName(page, id) {
+  if (!id) return '';
+  const e = find(id, page);
+  if (!e) return '';
+  if (e.name) return e.name;
+  if (e.title) return e.title;
+  if (e.content) return e.content.slice(0, 20);
+  return '';
+}
+
+function router() {
+  const hash = location.hash.slice(1) || 'home';
+  const parts = hash.split('/');
+  const page = parts[0];
+  const param = parts[1] || null;
+
+  // 底栏高亮
+  document.querySelectorAll('#nav a').forEach(a => {
+    const dp = a.dataset.page;
+    a.classList.toggle('active', page === dp || page.startsWith(dp.replace(/s$/, '')));
+  });
+
+  // 详情页渲染器映射（复数type → detail函数）
+  const DETAIL = {
+    attractions: id => renderAttractionDetail(id),
+    shows: id => renderShowDetail(id),
+    restaurants: id => renderRestaurantDetail(id),
+    dishes: id => renderDishDetail(id),
+    itineraries: id => renderItineraryDetail(id),
+    tips: id => renderTipDetail(id),
+    warnings: id => renderWarningDetail(id),
+    shortcuts: id => renderShortcutDetail(id),
+    tags: id => renderTagContent(id),
+    preparations: id => renderPreparationDetail(id),
+  };
+
+  // 列表页渲染器映射
+  const LIST = {
+    home: renderHome,
+    attractions: renderAttractionList,
+    shows: renderShowList,
+    show_schedule: renderShowSchedule,
+    restaurants: renderRestaurantList,
+    dishes: renderDishList,
+    itineraries: renderItineraryList,
+    tips: renderTipList,
+    warnings: renderWarningList,
+    shortcuts: renderShortcutList,
+    tags: renderTagCloud,
+    preparations: renderPreparations,
+    more: renderMore,
+  };
+
+  let html = '';
+  // 列表页/详情页的实体颜色映射
+  const PAGE_COLOR = {
+    attractions:'var(--c-attraction)', shows:'var(--c-show)',
+    restaurants:'var(--c-restaurant)', dishes:'var(--c-dish)',
+    tips:'var(--c-tip)', warnings:'var(--c-warning)',
+    shortcuts:'var(--c-shortcut)', itineraries:'var(--c-itinerary)',
+  };
+  if (param && DETAIL[page]) {
+    // 详情页
+    html = breadcrumb(page, param) + DETAIL[page](param);
+  } else if (LIST[page]) {
+    // 列表页
+    const content = (page !== 'home' ? breadcrumb(page) : '') + LIST[page]();
+    const color = PAGE_COLOR[page];
+    html = color ? `<div style="--section-color:${color}">${content}</div>` : content;
+  }
+
+  if (html) {
+    app().innerHTML = html;
+    window.scrollTo(0, 0);
+  }
+}
+
+window.addEventListener('hashchange', function() { stopCarousel(); router(); if (location.hash === '#home' || location.hash === '' || location.hash === '#') startCarousel(); });
+window.addEventListener('DOMContentLoaded', function() { router(); startCarousel(); });
+
+// ========== 页面渲染 ==========
+
+// --- 首页 ---
+function renderStatGrid() {
+  const entries = [
+    {label: '游乐项目', num: DATA.attractions.attractions.length, page: 'attractions'},
+    {label: '演出', num: DATA.shows.shows.length, page: 'shows'},
+    {label: '餐厅', num: DATA.restaurants.restaurants.length, page: 'restaurants'},
+    {label: '行程', num: DATA.itineraries.itineraries.length, page: 'itineraries'},
+    {label: '技巧', num: DATA.tips.tips.length, page: 'tips'},
+    {label: '避雷', num: DATA.warnings.warnings.length, page: 'warnings'},
+    {label: '小道', num: DATA.shortcuts.shortcuts.length, page: 'shortcuts'},
+    {label: '标签', num: DATA.tags.tags.length, page: 'tags'},
+    {label: '行前准备', num: '🎒', page: 'preparations'},
+  ];
+  let html = '<div class="grid">';
+  entries.forEach(e => {
+    html += `<div class="grid-item" onclick="nav('${e.page}')">
+      <div class="num">${e.num}</div><div class="label">${e.label}</div><div class="grid-hint">查看 ›</div></div>`;
+  });
+  return html + '</div>';
+}
+
+function renderTop5Chart() {
+  const top5 = DATA.attractions.attractions
+    .filter(a => a.ranking)
+    .sort((a, b) => a.ranking - b.ranking)
+    .slice(0, 5);
+  if (!top5.length) return '';
+  let html = '<div class="section-title">项目排名 Top5</div>';
+  const BAR_COLORS = ['linear-gradient(90deg,#007aff,#5ac8fa)','linear-gradient(90deg,#af52de,#da8fff)','linear-gradient(90deg,#ff9500,#ffcc00)','linear-gradient(90deg,#34c759,#86efac)','linear-gradient(90deg,#007aff,#5856d6)'];
+  html += '<div class="rank-chart"><div class="rank-chart-title">🎢 必玩项目推荐</div>';
+  const maxRating = 5;
+  top5.forEach((a, i) => {
+    const pct = Math.round((a.rating / maxRating) * 100);
+    const barBg = BAR_COLORS[i] || BAR_COLORS[0];
+    const stars = '★'.repeat(a.rating) + '☆'.repeat(5 - a.rating);
+    html += `<div class="rank-row" onclick="nav('attractions/${a.id}')">
+      <div class="rank-num">#${a.ranking}</div>
+      <div class="rank-name">${a.name}</div>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${barBg}"><span>${stars} ${a.rating}分</span></div></div>
+    </div>`;
+  });
+  return html + '</div>';
+}
+
+function buildCarouselSlides() {
+  const warnItems = DATA.warnings.warnings.slice(0, 6);
+  const dishItems = DATA.dishes.dishes.filter(d => findReviews(d.id).length > 0).slice(0, 6);
+  const slides = [
+    {type:'tip', items: DATA.tips.tips.slice(0, 6)},
+    {type:'warn', items: warnItems},
+    {type:'dish', items: dishItems}
+  ].filter(s => s.items.length > 0);
+  return slides;
+}
+
+function renderCarousel(slides) {
+  if (slides.length <= 1) return '';
+  let html = '<div class="carousel" id="homeCarousel"><div class="carousel-track">';
+  slides.forEach(s => {
+    html += `<div class="carousel-slide" data-type="${s.type}">`;
+    html += renderSlideContent(s);
+    html += '</div>';
+  });
+  html += '</div><div class="carousel-dots">';
+  slides.forEach((_, i) => html += `<span class="carousel-dot${i === 0 ? ' active' : ''}" onclick="goSlide(${i})"></span>`);
+  html += '</div></div>';
+  return html;
+}
+
+function renderSlideContent(s) {
+  const tipIcons = TIP_ICONS;
+  if (s.type === 'tip') {
+    let html = '<div class="section-title">💡 实用技巧</div><div class="tip-grid">';
+    s.items.slice(0, 6).forEach((t, i) => {
+      html += `<div class="tip-card" onclick="nav('tips/${t.id}')">
+        <div class="tip-icon">${tipIcons[i] || '💡'}</div>
+        <h4>${t.title || t.category}</h4>
+        <p>${(t.content || '').slice(0, 60)}${(t.content || '').length > 60 ? '...' : ''}</p>
+      </div>`;
+    });
+    return html + '</div>';
+  } else if (s.type === 'warn') {
+    let html = '<div class="section-title">⚠️ 避雷提醒</div><div class="tip-grid">';
+    s.items.slice(0, 6).forEach(w => {
+      const sevCls = sevStyle(w.severity);
+      html += `<div class="tip-card warn-card" onclick="nav('warnings/${w.id}')">
+        <div class="tip-icon" style="${sevCls}">${severityIcon(w.severity)}</div>
+        <h4>${(w.content || '').slice(0, 20)}</h4>
+        <p>${(w.content || '').slice(0, 60)}</p>
+      </div>`;
+    });
+    return html + '</div>';
+  } else if (s.type === 'dish') {
+    let html = '<div class="section-title">🍽️ 热门菜品</div><div class="tip-grid">';
+    s.items.slice(0, 6).forEach(d => {
+      const restName = dishRestaurantName(d);
+      const reviews = findReviews(d.id);
+      const sentiment = reviews[0] ? reviews[0].sentiment : '';
+      const sentIcon = sentimentIcon(sentiment);
+      html += `<div class="tip-card dish-card" onclick="nav('dishes/${d.id}')">
+        <div class="tip-icon">${sentIcon}</div>
+        <h4>${d.name}</h4>
+        <p>${restName}</p>
+      </div>`;
+    });
+    return html + '</div>';
+  }
+  return '';
+}
+
+function renderFallbackSections(slides) {
+  let html = '';
+  if (slides.length <= 1) {
+    const keyTips = DATA.tips.tips.slice(0, 6);
+    html += '<div class="section-title">实用技巧</div><div class="tip-grid">';
+    const tipIcons = TIP_ICONS;
+    keyTips.forEach((t, i) => {
+      html += `<div class="tip-card" onclick="nav('tips/${t.id}')">
+        <div class="tip-icon">${tipIcons[i] || '💡'}</div>
+        <h4>${t.title || t.category}</h4>
+        <p>${(t.content || '').slice(0, 60)}${(t.content || '').length > 60 ? '...' : ''}</p>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  if (slides.length <= 1) {
+    const popularDishes = DATA.dishes.dishes.filter(d => findReviews(d.id).length > 0).slice(0, 6);
+    if (popularDishes.length) {
+      html += '<div class="section-title">热门菜品</div><div class="tip-grid">';
+      popularDishes.forEach(d => {
+        const restName = dishRestaurantName(d);
+        const reviews = findReviews(d.id);
+        const sentiment = reviews[0] ? reviews[0].sentiment : '';
+        const sentIcon = sentimentIcon(sentiment);
+        html += `<div class="tip-card dish-card" onclick="nav('dishes/${d.id}')">
+          <div class="tip-icon">${sentIcon}</div>
+          <h4>${d.name}</h4>
+          <p>${restName}</p>
+        </div>`;
+      });
+      html += '</div>';
+    }
+  }
+  return html;
+}
+
+function renderMentalPrep() {
+  if (!DATA.attractions.mental_preparation || !DATA.attractions.mental_preparation.length) return '';
+  let html = '<div class="section-title">心理准备</div><div class="card">';
+  DATA.attractions.mental_preparation.forEach(m => html += `<p>🧠 ${m}</p>`);
+  return html + '</div>';
+}
+
+function renderHome() {
+  const slides = buildCarouselSlides();
+  return renderStatGrid() + renderTop5Chart() + renderCarousel(slides) + renderFallbackSections(slides) + renderMentalPrep();
+}
+
+// --- 项目列表 ---
+function renderAttractionList() {
+  let html = '';
+  html += renderFilterBar(filters.attractions, 'setAttrFilter');
+
+  let list = DATA.attractions.attractions;
+  if (filters.attractions !== 'all') {
+    list = list.filter(a => (a.zone_ids || []).includes(filters.attractions) || a.tags.includes(filters.attractions));
+  }
+  if (!list.length) { html += '<div class="empty">该园区暂无项目</div>'; }
+  list = list.sort((a, b) => (a.ranking || 99) - (b.ranking || 99));
+
+  list.forEach(a => {
+    const hTag = a.height_requirement && a.height_requirement.min_cm ? `<span style="font-size:11px;color:var(--orange);margin-left:4px">📏≥${a.height_requirement.min_cm}cm</span>` : '';
+    html += `<div class="list-item" data-type="attraction" onclick="nav('attractions/${a.id}')">
+      <div class="info"><h4>${a.name} ${starsHtml(a.rating)}${hTag}</h4>
+      <p>${a.subtype || ''} · ${zonesHtml(a.zone_ids)}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+
+  return html;
+}
+
+// --- 项目详情 ---
+function renderAttractionDetail(id) {
+  const a = find(id, 'attractions');
+  if (!a) return '<div class="empty">内容不存在：项目</div>';
+
+  let html = '<div style="--section-color:var(--c-attraction)">';
+  html += `<div class="detail-header" data-type="attraction">
+    <h2>${a.name} ${starsHtml(a.rating)}</h2>
+    <div class="sub">${a.subtype || ''}${a.ranking ? ' · 排名 #' + a.ranking : ''}</div>
+    ${tagsHtml(a.tags, true)}
+  </div>`;
+
+  // 身高限制
+  if (a.height_requirement && a.height_requirement.min_cm) {
+    const hr = a.height_requirement;
+    html += '<div class="section-title">身高限制</div><div class="card">';
+    html += `<p>📏 最低身高：<b>${hr.min_cm}cm</b></p>`;
+    if (hr.note) html += `<p class="sub-text">${hr.note}</p>`;
+    html += '</div>';
+  }
+
+  // 客观属性
+  html += '<div class="section-title">项目信息</div><div class="card">';
+  if (a.duration_minutes) html += `<p>⏱ 时长：<b>${a.duration_minutes}分钟</b></p>`;
+  html += `<p>${a.indoor ? '🏠 室内' : '🌳 室外'}</p>`;
+  if (a.water_splash) html += '<p>💦 可能会湿身</p>';
+  if (a.single_rider) html += '<p>🎫 有单人通道</p>';
+  if (a.has_photo) html += '<p>📸 有官方拍照</p>';
+  html += '</div>';
+
+  // 排队策略
+  if (a.queue_strategy) {
+    const qs = a.queue_strategy;
+    html += '<div class="section-title">排队策略</div><div class="card">';
+    if (qs.first_batch) {
+      html += `<p><b>第一批入园：</b>${qs.first_batch.is_recommended ? '✅ 推荐' : '❌ 不推荐'} ${qs.first_batch.description || ''}</p>`;
+    }
+    if (qs.non_first_batch) {
+      html += `<p><b>非第一批：</b>${qs.non_first_batch.is_recommended ? '✅ 推荐' : '❌ 不推荐'} ${qs.non_first_batch.description || ''}</p>`;
+    }
+    if (qs.best_timing) html += `<p><b>最佳时机：</b>${qs.best_timing}</p>`;
+    if (qs.threshold_minutes) html += `<p><b>排队阈值：</b>≤${qs.threshold_minutes}分钟${qs.threshold_rule ? ' → ' + qs.threshold_rule : ''}</p>`;
+    if (qs.channel_advice) html += `<p>${qs.channel_advice}</p>`;
+    html += '</div>';
+  }
+
+  // 存包
+  if (a.locker) {
+    const lk = a.locker;
+    if (lk.is_required) {
+      html += '<div class="section-title">存包须知</div><div class="card">';
+      html += `<p>需存包 · ${lk.timing || ''}</p>`;
+      if (lk.phone_allowed) html += '<p>📱 手机可以带入</p>';
+      if (lk.pickup_location) html += `<p>取包：${lk.pickup_location}</p>`;
+      if (lk.notes) html += `<p>${lk.notes}</p>`;
+      html += '</div>';
+    } else if (lk.phone_allowed) {
+      html += '<div class="section-title">存包须知</div><div class="card">';
+      html += '<p>✅ 无需存包</p>';
+      html += '<p>📱 手机可以带入</p>';
+      html += '</div>';
+    }
+  }
+
+  // 座位建议
+  if (a.seat_advice && a.seat_advice.length) {
+    html += '<div class="section-title">座位建议</div><div class="card">';
+    a.seat_advice.forEach(s => {
+      html += `<p><b>${s.position}：</b>${s.experience || ''} ${s.how_to_get ? '（' + s.how_to_get + '）' : ''}</p>`;
+    });
+    html += '</div>';
+  }
+
+  // 评价
+  html += renderReviews(a.id);
+
+  // 对立观点
+  html += renderOpinions(a.id);
+
+  // 项目自身避雷
+  html += renderWarnings(a.id);
+
+  // 反向索引 - 关联信息
+  html += renderRelations(id);
+
+  return html + '</div>';
+}
+
+// --- 反向索引渲染 ---
+function renderRelations(entityId) {
+  let hasContent = false;
+  let html = '<div class="section-title">关联信息</div><div class="relations">';
+
+  // 1. 同园区内容（通过 zone_index）
+  const zoneId = resolveEntityZone(entityId);
+  if (zoneId) {
+    const zi = INDEXES.zone_index[zoneId];
+    if (zi) {
+      // 同园区其他项目
+      const otherAttrs = (zi.attractions || []).filter(id => id !== entityId);
+      if (otherAttrs.length) {
+        hasContent = true;
+        html += '<div class="rel-subtitle">同园区项目</div>';
+        otherAttrs.forEach(id => {
+          const a = find(id, 'attractions');
+          if (a) html += `<div class="rel-item" onclick="nav('attractions/${id}')"><span style="color:var(--c-attraction)">●</span> ${a.name} ${starsHtml(a.rating)} <span class="rel-arrow">›</span></div>`;
+        });
+      }
+      // 同园区演出
+      if (zi.shows && zi.shows.length) {
+        hasContent = true;
+        html += '<div class="rel-subtitle mt">同园区演出</div>';
+        zi.shows.forEach(id => {
+          const s = find(id, 'shows');
+          if (s) html += `<div class="rel-item" onclick="nav('shows/${id}')"><span style="color:var(--c-show)">●</span> ${s.name} <span class="rel-arrow">›</span></div>`;
+        });
+      }
+      // 同园区餐厅
+      if (zi.restaurants && zi.restaurants.length) {
+        hasContent = true;
+        html += '<div class="rel-subtitle mt">同园区餐厅</div>';
+        zi.restaurants.forEach(id => {
+          const r = find(id, 'restaurants');
+          if (r) html += `<div class="rel-item" onclick="nav('restaurants/${id}')"><span style="color:var(--c-restaurant)">●</span> ${r.name} <span class="rel-arrow">›</span></div>`;
+        });
+      }
+    }
+  }
+
+  // 1.5 替代选择（通过 alternative_index）
+  const altRels = INDEXES.alternative_index[entityId];
+  if (altRels && altRels.length) {
+    hasContent = true;
+    html += '<div class="rel-subtitle mt">替代选择</div>';
+    altRels.forEach(alt => {
+      let label = alt.name;
+      if (!label && alt.entity_id) {
+        const dd = find(alt.entity_id, 'dishes');
+        if (dd) label = dd.name;
+        else { const rr = find(alt.entity_id, 'restaurants'); if (rr) label = rr.name; }
+      }
+      if (label && alt.entity_id) {
+        const route = alt.type === 'dish' ? 'dishes' : alt.type === 'restaurant' ? 'restaurants' : alt.type === 'attraction' ? 'attractions' : alt.type === 'warning' ? 'warnings' : alt.type === 'show' ? 'shows' : '';
+        html += `<div class="rel-item" onclick="nav('${route}/${alt.entity_id}')">
+          🔄 ${label}${alt.reason ? ' · ' + alt.reason : ''} <span class="rel-arrow">›</span></div>`;
+      } else if (label) {
+        html += `<div class="rel-item rel-static">🔄 ${label}${alt.reason ? ' · ' + alt.reason : ''}</div>`;
+      }
+    });
+  }
+
+  // 2. 反向索引（backrefs）
+  const refs = INDEXES.backrefs[entityId];
+  if (refs) {
+    if (refs.tips && refs.tips.length) {
+      hasContent = true;
+      html += '<div class="rel-subtitle mt">相关技巧</div>';
+      refs.tips.forEach(t => {
+        html += `<div class="rel-item" onclick="nav('tips/${t.id}')">💡 ${t.title} <span class="rel-arrow">›</span></div>`;
+      });
+    }
+
+    if (refs.warnings && refs.warnings.length) {
+      hasContent = true;
+      html += '<div class="rel-subtitle mt">相关避雷</div>';
+      refs.warnings.forEach(w => {
+        const short = (w.content || '').slice(0, 40) + ((w.content || '').length > 40 ? '...' : '');
+        const alt = w.alternative ? ' → ' + w.alternative : '';
+        html += `<div class="rel-item" onclick="nav('warnings/${w.id}')">⚠️ ${severityHtml(w.severity)} ${short}${alt} <span class="rel-arrow">›</span></div>`;
+      });
+    }
+
+    if (refs.itineraries && refs.itineraries.length) {
+      hasContent = true;
+      html += '<div class="rel-subtitle mt">出现在行程</div>';
+      refs.itineraries.forEach(it => {
+        html += `<div class="rel-item" onclick="nav('itineraries/${it.id}')">📅 ${it.name} ${it.time || ''} ${it.action ? '· ' + it.action : ''} <span class="rel-arrow">›</span></div>`;
+      });
+    }
+    if (refs.reviews && refs.reviews.length) {
+      html += '<div class="rel-subtitle mt">相关评价</div>';
+      refs.reviews.forEach(r => {
+        const icon = sentimentIcon(r.sentiment);
+        html += `<div class="rel-item" style="cursor:default"><span style="font-size:12px">${icon} ${(r.content || '').length > 40 ? (r.content || '').slice(0, 40) + '...' : (r.content || '')}</span></div>`;
+      });
+    }
+  }
+
+  html += '</div>';
+  return hasContent ? html : '';
+}
+
+function resolveEntityZone(entityId) {
+  if (!entityId) return '';
+  for (const type of ['attractions','shows','restaurants','dishes']) {
+    const e = find(entityId, type);
+    if (e && e.zone_ids && e.zone_ids.length) return e.zone_ids[0];
+  }
+  return '';
+}
+
+// --- 演出列表 ---
+function renderShowList() {
+  let html = '';
+  html += '<div class="card warn-banner">演出时间仅供参考，具体以景区官方公告为准</div>';
+  html += '<div class="section-title">演出时间表 <span style="float:right;font-size:13px;font-weight:400"><a href="#show_schedule" style="color:var(--section-color, var(--neutral));text-decoration:none">查看时间轴 ›</a></span></div>';
+  html += renderFilterBar(filters.shows, 'setShowFilter');
+
+  let list = DATA.shows.shows;
+  if (filters.shows !== 'all') {
+    list = list.filter(s => (s.zone_ids || []).includes(filters.shows) || s.tags.includes(filters.shows));
+  }
+  if (!list.length) { html += '<div class="empty">该园区暂无演出</div>'; }
+  list.forEach(s => {
+    const sched = s.schedule || {};
+    const allTimes = sched.times || sched.example_times || [];
+    // 超过6场时只显示频率，避免列表页文字过长
+    const timeStr = allTimes.length > 6 ? (sched.frequency || allTimes.slice(0,3).join(', ') + '…') : allTimes.join(', ');
+    const freqStr = timeStr ? timeStr : (sched.frequency || '');
+    const typeTag = getTypeTag(s.tags);
+    html += `<div class="list-item" data-type="show" onclick="nav('shows/${s.id}')">
+      <div class="info"><h4>${s.name}</h4>
+      <p>${typeTag}${freqStr ? ' · ' + freqStr : ''}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+
+  return html;
+}
+
+// --- 演出时间轴 ---
+function renderShowSchedule() {
+  // 按时间排序所有演出场次
+  var slots = [];
+  DATA.shows.shows.forEach(function(s) {
+    var sched = s.schedule || {};
+    var times = sched.example_times || sched.times || [];
+    if (!times.length) return;
+    // 超过8场的演出只取首尾各3场，避免时间轴过长
+    if (times.length > 8) {
+      times = times.slice(0, 3).concat(times.slice(-3));
+    }
+    times.forEach(function(t) {
+      var h = parseInt(t.split(':')[0]) || 0;
+      var m = parseInt(t.split(':')[1]) || 0;
+      slots.push({time: t, sort: h * 60 + m, show: s, duration: sched.duration_minutes || 0, note: sched.note || ''});
+    });
+  });
+  slots.sort(function(a, b) { return a.sort - b.sort; });
+
+  var html = '<div class="schedule-page">';
+  html += '<div class="card hint"><p class="sub-text">以下为参考时间，实际场次以当日App为准。点击演出名称查看详情。</p></div>';
+
+  var curHour = -1;
+  slots.forEach(function(slot) {
+    var h = parseInt(slot.time.split(':')[0]);
+    // 时间分组标题
+    if (h !== curHour) {
+      curHour = h;
+      var period = h < 12 ? '上午' : h < 18 ? '下午' : '晚上';
+      html += '<div class="schedule-period">' + period + ' ' + slot.time.split(':')[0] + ':00</div>';
+    }
+    // 场次卡片
+    var s = slot.show;
+    var zoneName = zonesHtml(s.zone_ids) || '';
+    var durStr = slot.duration ? slot.duration + 'min' : '';
+    var typeLabel = getTypeIcon(s.tags);
+    html += '<div class="schedule-slot" onclick="nav(\'shows/' + s.id + '\')">';
+    html += '<div class="schedule-time">' + slot.time + '</div>';
+    html += '<div class="schedule-info">';
+    html += '<div class="schedule-name">' + typeLabel + ' ' + s.name + '</div>';
+    html += '<div class="schedule-meta">' + zoneName + (durStr ? ' · ' + durStr : '') + '</div>';
+    html += '</div></div>';
+  });
+
+  html += '</div>';
+  return html;
+}
+
+// --- 演出详情 ---
+function renderShowDetail(id) {
+  const s = find(id, 'shows');
+  if (!s) return '<div class="empty">内容不存在</div>';
+  let html = '<div style="--section-color:var(--c-show)">';
+  html += `<div class="detail-header" data-type="show"><h2>${s.name}</h2>
+    ${tagsHtml(s.tags, true)}</div>`;
+
+  if (s.location) {
+    html += `<div class="card standalone"><p>📍 ${s.location}</p></div>`;
+  }
+
+  // 客观属性
+  html += '<div class="card standalone">';
+  if (s.language) html += `<p>🗣 语言：<b>${s.language}</b></p>`;
+  if (s.is_seasonal) html += '<p>🌸 季节限定</p>';
+  html += '</div>';
+
+  if (s.highlights && s.highlights.length) {
+    html += '<div class="section-title">亮点</div><div class="card">';
+    s.highlights.forEach(h => html += `<p>✨ ${h}</p>`);
+    html += '</div>';
+  }
+
+  if (s.schedule) {
+    const sc = s.schedule;
+    html += '<div class="section-title">演出时间</div><div class="card">';
+    if (sc.frequency) html += `<p>${sc.frequency}</p>`;
+    if (sc.times) html += `<p><b>时间：</b>${sc.times.join(', ')}</p>`;
+    if (sc.example_times) html += `<p><b>参考时间：</b>${sc.example_times.join(', ')}</p>`;
+    if (sc.time_range) html += `<p><b>时间段：</b>${sc.time_range}</p>`;
+    if (sc.duration_minutes) html += `<p><b>时长：</b>${sc.duration_minutes}分钟</p>`;
+    if (sc.note) html += `<p>${sc.note}</p>`;
+    html += '</div>';
+  }
+
+  if (s.route) {
+    html += '<div class="section-title">巡游路线</div><div class="card">';
+    if (s.route.start) html += `<p><b>起点：</b>${s.route.start}</p>`;
+    if (s.route.path) html += `<p><b>路线：</b>${s.route.path}</p>`;
+    if (s.route.viewing_advice) html += `<p><b>观看建议：</b>${s.route.viewing_advice}</p>`;
+    if (s.route.spots) s.route.spots.forEach(sp => html += `<p>📍 ${sp}</p>`);
+    if (s.route.tips) s.route.tips.forEach(t => html += `<p>💡 ${t}</p>`);
+    html += '</div>';
+  }
+
+  if (s.tips && s.tips.length) {
+    html += '<div class="section-title">观看技巧</div><div class="card">';
+    s.tips.forEach(t => { const txt = typeof t === 'string' ? t : (t.content || ''); if (txt) html += `<p>💡 ${txt}</p>`; });
+    html += '</div>';
+  }
+
+  html += renderOpinions(s.id);
+
+  html += renderWarnings(s.id);
+
+  html += renderRelations(id);
+  return html + '</div>';
+}
+
+// --- 餐厅列表 ---
+function renderRestaurantList() {
+  let html = '';
+  html += renderFilterBar(filters.restaurants, 'setRestFilter');
+
+  let list = DATA.restaurants.restaurants;
+  if (filters.restaurants !== 'all') {
+    list = list.filter(r => (r.zone_ids || []).includes(filters.restaurants) || r.tags.includes(filters.restaurants));
+  }
+  if (!list.length) { html += '<div class="empty">该园区暂无餐厅</div>'; }
+  list.forEach(r => {
+    const dishNames = (r.recommended_dish_ids || []).map(did => {
+      const d = find(did, 'dishes');
+      return d ? d.name : '';
+    }).filter(Boolean);
+    html += `<div class="list-item" data-type="restaurant" onclick="nav('restaurants/${r.id}')">
+      <div class="info"><h4>${r.name}</h4>
+      <p>${r.average_price ? '人均¥' + r.average_price + ' · ' : ''}${zonesHtml(r.zone_ids) || ''}${dishNames.length ? ' · ' + dishNames.join('、') : ''}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+
+  return html;
+}
+
+function renderDishList() {
+  let html = '';
+  html += renderFilterBar(filters.dishes, 'setDishFilter');
+
+  let list = DATA.dishes.dishes;
+  if (filters.dishes !== 'all') {
+    list = list.filter(d => (d.zone_ids || []).includes(filters.dishes) || d.tags.includes(filters.dishes));
+  }
+  if (!list.length) { html += '<div class="empty">该园区暂无菜品</div>'; }
+  list.forEach(d => {
+    const restNames = (d.restaurant_ids || []).map(rid => {
+      const r = find(rid, 'restaurants');
+      return r ? r.name : '';
+    }).filter(Boolean).join('、');
+    html += `<div class="list-item" data-type="dish" onclick="nav('dishes/${d.id}')">
+      <div class="info"><h4>${d.name}</h4>
+      <p>${d.price ? '¥' + d.price + ' · ' : ''}${restNames}</p></div><span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+function renderDishDetail(id) {
+  const d = find(id, 'dishes');
+  if (!d) return '<div class="empty">内容不存在：菜品</div>';
+  let html = '<div style="--section-color:var(--c-dish)">';
+
+  // 头部：所在餐厅
+  const restNames = (d.restaurant_ids || []).map(rid => {
+    const r = find(rid, 'restaurants');
+    return r ? `<span class="tag clickable" onclick="event.stopPropagation();nav('restaurants/${rid}')">${r.name}</span>` : '';
+  }).filter(Boolean).join(' ');
+  const zoneName = zonesHtml(d.zone_ids);
+  html += '<div class="detail-header" data-type="dish"><h2>' + d.name + '</h2><div class="sub">' + (zoneName ? zoneName + ' · ' : '') + '所在餐厅：' + restNames + '</div></div>';
+
+  // 客观属性
+  if (d.price) {
+    html += `<div class="card standalone"><p>💰 价格：<b>¥${d.price}</b></p></div>`;
+  }
+
+  // 口味标签（从 tags 中筛选 taste 分类）
+  const tasteTags = (d.tags || []).filter(t => { const tag = DATA.tags.tags.find(x => x.id === t); return tag && tag.category === 'taste'; });
+  if (tasteTags.length) {
+    html += '<div class="section-title">口味</div><div class="card">';
+    html += tasteTags.map(t => tagLookup(t)).filter(Boolean).join(' ');
+    html += '</div>';
+  }
+
+  // 评价
+  html += renderReviews(d.id);
+
+  // 对立观点
+  html += renderOpinions(d.id);
+
+  // 关联信息
+  html += renderRelations(id);
+  return html + '</div>';
+}
+
+function renderRestaurantDetail(id) {
+  const r = find(id, 'restaurants');
+  if (!r) return '<div class="empty">内容不存在</div>';
+  let html = '<div style="--section-color:var(--c-restaurant)">';
+  html += `<div class="detail-header" data-type="restaurant"><h2>${r.name}</h2>
+    <div class="sub">${tagsHtml(r.tags, true)}</div>`;
+
+  if (r.location) {
+    html += '<div class="card standalone"><p>📍 ' + r.location + '</p></div>';
+  }
+
+  // 客观属性
+  html += '<div class="card standalone">';
+  if (r.average_price) html += `<p>💰 人均：<b>¥${r.average_price}</b></p>`;
+  if (r.business_hours) html += `<p>🕐 营业时间：<b>${r.business_hours}</b></p>`;
+  html += `<p>${r.indoor ? '🏠 室内' : '🌳 室外'}</p>`;
+  html += '</div>';
+
+  // 评价
+  html += renderReviews(r.id);
+
+  html += renderOpinions(r.id);
+
+  html += renderRelations(id);
+  return html + '</div>';
+}
+
+// --- 行程列表 ---
+function renderItineraryList() {
+  let html = '';
+  DATA.itineraries.itineraries.forEach(it => {
+    html += `<div class="list-item" data-type="itinerary" onclick="nav('itineraries/${it.id}')">
+      <div class="info"><h4>${it.name}</h4>
+      <p>${it.description ? it.description.slice(0, 50) : ''}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+function renderItineraryDetail(id) {
+  const it = find(id, 'itineraries');
+  if (!it) return '<div class="empty">内容不存在</div>';
+
+  let html = '<div style="--section-color:var(--c-itinerary)">';
+  html += `<div class="detail-header" data-type="itinerary"><h2>${it.name}</h2>
+    <div class="sub">${it.description || ''}</div>${tagsHtml(it.tags, true)}</div>`;
+
+  if (it.time_slots) {
+    it.time_slots.forEach(slot => {
+      html += `<div class="section-title">${slot.period || ''}</div><div class="timeline">`;
+      slot.items.forEach(item => {
+        // 多值支持：从 attraction_ids / show_ids / restaurant_ids 构建链接
+        const attractions = (item.attraction_ids || []).map(aid => find(aid, 'attractions')).filter(Boolean);
+        const shows = (item.show_ids || []).map(sid => find(sid, 'shows')).filter(Boolean);
+        const restaurants = (item.restaurant_ids || []).map(rid => find(rid, 'restaurants')).filter(Boolean);
+
+        // 确定链接目标：优先取第一个有值的实体
+        let onclick = '';
+        if (attractions.length) onclick = ` class="tl-link" onclick="nav('attractions/${attractions[0].id}')"`;
+        else if (shows.length) onclick = ` class="tl-link" onclick="nav('shows/${shows[0].id}')"`;
+        else if (restaurants.length) onclick = ` class="tl-link" onclick="nav('restaurants/${restaurants[0].id}')"`;
+
+        // 构建关联实体名称列表
+        const linkedNames = [];
+        attractions.forEach(a => linkedNames.push(a.name));
+        shows.forEach(s => linkedNames.push(s.name));
+        restaurants.forEach(r => linkedNames.push(r.name));
+        const extraNames = linkedNames.length > 1 ? linkedNames.slice(1).join('、') : '';
+
+        html += `<div class="timeline-item"${onclick}>
+          <div class="time">${item.time || ''}</div>
+          <div class="action">${item.action || ''}${onclick ? ' ›' : ''}</div>
+          ${extraNames ? '<div class="note">🔗 ' + extraNames + '</div>' : ''}
+          ${item.note ? '<div class="note">' + item.note + '</div>' : ''}
+        </div>`;
+      });
+      html += '</div>';
+    });
+  }
+
+  if (it.principles && it.principles.length) {
+    html += '<div class="section-title">行程原则</div><div class="card">';
+    it.principles.forEach(p => html += `<p>📌 ${p}</p>`);
+    html += '</div>';
+  }
+  return html + '</div>';
+}
+
+// --- 技巧列表 ---
+function renderTipList() {
+  let html = '';
+  DATA.tips.tips.forEach(t => {
+    html += `<div class="list-item" data-type="tip" onclick="nav('tips/${t.id}')">
+      <div class="info"><h4>${t.title || t.category}</h4>
+      <p>${t.category || ''}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+function renderTipDetail(id) {
+  const t = find(id, 'tips');
+  if (!t) return '<div class="empty">内容不存在</div>';
+  let html = '<div style="--section-color:var(--c-tip)">';
+  html += `<div class="detail-header" data-type="tip"><h2>${t.title || t.category}</h2>
+    <div class="sub">${t.category || ''}</div>${tagsHtml(t.tags, true)}</div>`;
+  if (t.content) {
+    html += `<div class="card"><p>${t.content}</p></div>`;
+  }
+
+  html += renderOpinions(t.id);
+  html += renderRelations(id);
+
+  return html + '</div>';
+}
+
+// --- 避雷列表 ---
+function renderWarningList() {
+  let html = '';
+  const all = DATA.warnings.warnings;
+  const sorted = all.slice().sort((a, b) =>
+    (a.severity === 'high' ? 0 : a.severity === 'medium' ? 1 : 2) -
+    (b.severity === 'high' ? 0 : b.severity === 'medium' ? 1 : 2)
+  );
+  sorted.forEach(w => {
+    const targets = [];
+    (w.attraction_ids || []).forEach(id => { const a = find(id, 'attractions'); if (a) targets.push(a.name); });
+    (w.restaurant_ids || []).forEach(id => { const r = find(id, 'restaurants'); if (r) targets.push(r.name); });
+    (w.show_ids || []).forEach(id => { const s = find(id, 'shows'); if (s) targets.push(s.name); });
+    html += `<div class="list-item" data-type="warning" onclick="nav('warnings/${w.id}')">
+      <div class="info"><h4>${severityIcon(w.severity)} ${(w.content || '').slice(0, 30)}${(w.content || '').length > 30 ? '...' : ''}</h4>
+      <p>${w.category}${targets.length ? ' · ' + targets.join('、') : ''}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+// --- 避雷详情 ---
+function renderWarningDetail(id) {
+  const w = find(id, 'warnings');
+  if (!w) return renderWarningList();
+  let html = '<div style="--section-color:var(--c-warning)">';
+  html += `<div class="detail-header" data-type="warning"><h2>${severityIcon(w.severity)} ${w.content}</h2>
+    <div class="sub">${w.category}</div></div>`;
+  if (w.alternative) {
+    html += '<div class="card"><p>💡 替代方案：' + w.alternative + '</p></div>';
+  }
+  if (w.tags && w.tags.length) {
+    html += '<div class="section-title">标签</div><div class="card">';
+    html += tagsHtml(w.tags, true);
+    html += '</div>';
+  }
+  html += renderRelations(id);
+  return html + '</div>';
+}
+
+// --- 行前准备 ---
+function renderPreparations() {
+  const p = DATA.preparations;
+  let html = '';
+  const sections = [
+    {id: 'transport', label: '交通指南', icon: '🚇', desc: '地铁/打车/回程'},
+    {id: 'ticket', label: '票价与优速通', icon: '🎫', desc: '四级票价 + 快速通道'},
+    {id: 'parking', label: '停车与寄存', icon: '🅿️', desc: '停车场/寄存柜/行李寄存'},
+    {id: 'rental', label: '租赁服务', icon: '♿', desc: '轮椅/婴儿车租赁'},
+    {id: 'clothing', label: '穿衣指南', icon: '👕', desc: '必穿/必带/不要穿'},
+    {id: 'items', label: '物品清单', icon: '🎒', desc: '必带 + 禁忌物品'},
+    {id: 'dates', label: '最佳日期', icon: '📅', desc: '淡季/周几/人流量判断'},
+    {id: 'checklist', label: '行前必做', icon: '✅', desc: '出发前检查清单'},
+  ];
+  sections.forEach(s => {
+    html += `<div class="list-item" onclick="nav('preparations/${s.id}')">
+      <div class="info"><h4>${s.icon} ${s.label}</h4><p>${s.desc}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+function renderTransportSection(p) {
+  const tr = p.transportation;
+  if (!tr) return '<div class="empty">暂无数据</div>';
+  let html = '';
+  if (tr.subway) {
+    const sw = tr.subway;
+    html += '<div class="section-title">🚇 地铁</div><div class="card">';
+    if (sw.lines) { html += '<p><b>线路：</b>'; sw.lines.forEach(l => html += `<span class="tag zone">${l}</span>`); html += '</p>'; }
+    if (sw.station) html += `<p><b>站点：</b>${sw.station}</p>`;
+    if (sw.best_exit) html += `<p><b>最佳出口：</b>${sw.best_exit}</p>`;
+    if (sw.security_advice) html += `<p><b>安检提示：</b>${sw.security_advice}</p>`;
+    html += '</div>';
+  }
+  if (tr.taxi_arrival && tr.taxi_arrival.length) {
+    html += '<div class="section-title">🚗 打车去（下车点）</div><div class="card">';
+    tr.taxi_arrival.forEach((t, i) => { html += `<p><b>📍 方案${i + 1}：${t.location}</b></p>`; if (t.note) html += `<p class="sub-text">${t.note}</p>`; });
+    html += '</div>';
+  }
+  if (tr.taxi_departure && tr.taxi_departure.length) {
+    html += '<div class="section-title">🚕 打车回（上车点）</div><div class="card">';
+    tr.taxi_departure.forEach(t => { html += `<p><b>📍 ${t.location}</b></p>`; if (t.note) html += `<p class="sub-text">${t.note}</p>`; });
+    html += '</div>';
+  }
+  if (tr.alternative_departure) { html += '<div class="section-title">💡 回程建议</div><div class="opinion-block"><p>' + tr.alternative_departure + '</p></div>'; }
+  return html;
+}
+
+function renderClothingSection(p) {
+  const cl = p.clothing;
+  if (!cl) return '<div class="empty">暂无数据</div>';
+  let html = '<div class="card">';
+  if (cl.must_wear) html += `<p>👟 <b>必穿：</b>${cl.must_wear}</p>`;
+  if (cl.must_bring) html += `<p>🧥 <b>必带：</b>${cl.must_bring}</p>`;
+  if (cl.forbidden) html += `<p>🚫 <b>不要穿：</b>${cl.forbidden}</p>`;
+  if (cl.note) html += `<p style="margin-top:8px;color:var(--sub)">${cl.note}</p>`;
+  return html + '</div>';
+}
+
+function renderItemsSection(p) {
+  let html = '';
+  if (p.essential_items && p.essential_items.length) {
+    html += '<div class="section-title">必带物品</div><div class="card">';
+    p.essential_items.forEach(i => html += `<p>📦 ${i.item}${i.purpose ? ' — ' + i.purpose : ''}</p>`);
+    html += '</div>';
+  }
+  if (p.prohibited_items && p.prohibited_items.length) {
+    html += '<div class="section-title">禁忌物品</div><div class="card">';
+    p.prohibited_items.forEach(i => html += `<p>🚫 ${i.item}${i.reason ? ' — ' + i.reason : ''}</p>`);
+    html += '</div>';
+  }
+  return html || '<div class="empty">暂无数据</div>';
+}
+
+function renderDatesSection(p) {
+  const bd = p.best_dates;
+  if (!bd) return '<div class="empty">暂无数据</div>';
+  let html = '<div class="card">';
+  if (bd.off_peak_seasons) { html += '<p><b>淡季推荐：</b>'; bd.off_peak_seasons.forEach(s => html += `<span class="tag zone">${s}</span>`); html += '</p>'; }
+  if (bd.best_weekdays) { html += '<p><b>最佳周几：</b>'; bd.best_weekdays.forEach(w => html += `<span class="tag zone">${w}</span>`); html += '</p>'; }
+  if (bd.weekend_note) html += `<p>${bd.weekend_note}</p>`;
+  if (bd.holiday_tip) html += `<p>${bd.holiday_tip}</p>`;
+  html += '</div>';
+  const ce = p.crowd_estimation;
+  if (ce) {
+    html += '<div class="section-title">人流量判断</div><div class="card">';
+    if (ce.method) html += `<p><b>判断方法：</b>${ce.method}</p>`;
+    if (ce.formula) html += `<p><b>估算公式：</b>${ce.formula}</p>`;
+    if (ce.thresholds && ce.thresholds.length) {
+      html += '<p style="margin-top:6px"><b>参考标准：</b></p>';
+      ce.thresholds.forEach(t => {
+        let range = '';
+        if (t.max_sessions && !t.min_sessions) range = `≤${t.max_sessions}场`;
+        else if (t.min_sessions && t.max_sessions) range = `${t.min_sessions}-${t.max_sessions}场`;
+        else if (t.min_sessions) range = `≥${t.min_sessions}场`;
+        html += `<p>${range} → ${t.advice}</p>`;
+      });
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderChecklistSection(p) {
+  if (!p.pre_trip_checklist || !p.pre_trip_checklist.length) return '<div class="empty">暂无数据</div>';
+  let html = '<div class="card">';
+  p.pre_trip_checklist.forEach(i => html += `<p>☑️ ${i.item}${i.purpose ? ' — ' + i.purpose : ''}</p>`);
+  return html + '</div>';
+}
+
+function renderTicketSection(p) {
+  if (!p.ticket_prices) return '<div class="empty">暂无数据</div>';
+  const tp = p.ticket_prices;
+  let html = '';
+  if (tp.note) html += `<p style="font-size:12px;color:var(--sub);margin-bottom:8px">⚠️ ${tp.note}</p>`;
+  html += '<div class="section-title">🎫 门票</div><div class="card">';
+  if (tp.tiers) { tp.tiers.forEach(t => html += `<p><b>${t.type}</b>：¥${t.price}${t.description ? ' <span class="small-text">（' + t.description + '）</span>' : ''}</p>`); }
+  html += '</div>';
+  if (tp.express_pass) {
+    const ep = tp.express_pass;
+    html += '<div class="section-title">⚡ 优速通</div><div class="card">';
+    if (ep.note) html += `<p class="small-text">${ep.note}</p>`;
+    if (ep.options) { ep.options.forEach(o => html += `<p><b>${o.type}</b>：¥${o.price}${o.description ? ' — ' + o.description : ''}</p>`); }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderParkingSection(p) {
+  let html = '';
+  if (p.parking) {
+    html += '<div class="section-title">🅿️ 停车场</div><div class="card">';
+    if (p.parking.note) html += `<p class="small-text">${p.parking.note}</p>`;
+    if (p.parking.options) { p.parking.options.forEach(o => html += `<p><b>${o.type}</b>：${o.price}${o.unit}${o.description ? ' <span class="small-text">（' + o.description + '）</span>' : ''}</p>`); }
+    html += '</div>';
+  }
+  if (p.locker) {
+    const lk = p.locker;
+    html += '<div class="section-title">🔒 寄存</div><div class="card">';
+    if (lk.note) html += `<p class="small-text">⚠️ ${lk.note}</p>`;
+    if (lk.self_service) { html += '<p><b>自助寄存柜</b></p>'; lk.self_service.forEach(s => html += `<p class="indent">${s.type}：${s.price}${s.unit}（${s.size}）</p>`); }
+    if (lk.ride_locker) { html += '<p><b>项目入口寄存柜</b></p><p class="indent">' + lk.ride_locker.description + ' — ' + lk.ride_locker.price + '</p>'; }
+    if (lk.baggage_service) {
+      const bs = lk.baggage_service;
+      html += `<p><b>${bs.description}</b></p>`;
+      if (bs.prices) bs.prices.forEach(pr => html += `<p class="indent">${pr.type}：${pr.price}${pr.unit}${pr.note ? '（' + pr.note + '）' : ''}</p>`);
+      if (bs.note) html += `<p class="small-text">${bs.note}</p>`;
+    }
+    html += '</div>';
+  }
+  return html || '<div class="empty">暂无数据</div>';
+}
+
+function renderRentalSection(p) {
+  if (!p.rental) return '<div class="empty">暂无数据</div>';
+  const rt = p.rental;
+  let html = '<div class="card">';
+  if (rt.wheelchair) html += `<p><b>♿ 轮椅</b>：${rt.wheelchair.price}${rt.wheelchair.unit}${rt.wheelchair.location ? '（' + rt.wheelchair.location + '）' : ''}</p>`;
+  if (rt.stroller) { rt.stroller.forEach(s => html += `<p><b>🚼 ${s.type}</b>：${s.price}${s.unit}</p>`); }
+  if (rt.note) html += `<p class="small-text">⚠️ ${rt.note}</p>`;
+  return html + '</div>';
+}
+
+const PREP_SECTIONS = {
+  transport: { title: '交通指南', render: renderTransportSection },
+  clothing:  { title: '穿衣指南', render: renderClothingSection },
+  items:     { title: '物品清单', render: renderItemsSection },
+  dates:     { title: '最佳日期', render: renderDatesSection },
+  checklist: { title: '行前必做', render: renderChecklistSection },
+  ticket:    { title: '票价与优速通', render: renderTicketSection },
+  parking:   { title: '停车与寄存', render: renderParkingSection },
+  rental:    { title: '租赁服务', render: renderRentalSection },
+};
+
+function renderPreparationDetail(section) {
+  const p = DATA.preparations;
+  if (!p) return '<div class="empty">暂无数据</div>';
+  const config = PREP_SECTIONS[section];
+  if (!config) return '<div class="empty">暂无数据</div>';
+  return `<div class="detail-header"><h2>${config.title}</h2></div>` + config.render(p);
+}
+
+// --- 秘密小道 ---// --- 秘密小道 ---
+function renderShortcutList() {
+  let html = '';
+  DATA.shortcuts.shortcuts.forEach(s => {
+    html += `<div class="list-item" data-type="shortcut" onclick="nav('shortcuts/${s.id}')">
+      <div class="info"><h4>${s.name}</h4>
+      <p>${s.from} → ${s.to} · 节省${s.savings}</p></div>
+      <span class="arrow">›</span></div>`;
+  });
+  return html;
+}
+
+// --- 标签云 ---
+function renderShortcutDetail(id) {
+  const s = find(id, 'shortcuts');
+  if (!s) return '<div class="empty">内容不存在</div>';
+  let html = '<div style="--section-color:var(--c-shortcut)">';
+  html += `<div class="detail-header" data-type="shortcut"><h2>${s.name}</h2>
+    <div class="sub">${s.from} → ${s.to}</div></div>`;
+
+  html += '<div class="card">';
+  html += `<p><b>路线</b>：${s.route || '暂无'}</p>`;
+  if (s.savings) html += `<p><b>节省</b>：${s.savings}</p>`;
+  if (s.avoid_mistake) html += `<p><b>避坑</b>：${s.avoid_mistake}</p>`;
+  if (s.condition) html += `<p><b>条件</b>：${s.condition}</p>`;
+  html += '</div>';
+
+  if (s.tags && s.tags.length) {
+    html += '<div class="section-title">标签</div><div class="card">';
+    html += tagsHtml(s.tags, true);
+    html += '</div>';
+  }
+
+  html += renderRelations(id);
+  return html + '</div>';
+}
+
+function renderTagCloud() {
+  let html = '';
+  const categories = DATA.tags.categories;
+  categories.forEach(cat => {
+    const catTags = DATA.tags.tags.filter(t => t.category === cat.id);
+    if (!catTags.length) return;
+    html += `<div class="card"><h3>${cat.name}</h3>`;
+    catTags.forEach(t => {
+      const tagCount = (INDEXES.tag_index[t.id] ? Object.values(INDEXES.tag_index[t.id]).flat().length : 0);
+      const zoneCount = (INDEXES.zone_index[t.id] ? Object.values(INDEXES.zone_index[t.id]).flat().length : 0);
+      const count = tagCount + zoneCount;
+      html += `<span class="tag clickable" onclick="nav('tags/${t.id}')">${t.name} (${count})</span> `;
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function renderTagContent(tagId) {
+  const tag = DATA.tags.tags.find(t => t.id === tagId);
+  if (!tag) return '<div class="empty">未找到标签</div>';
+
+  let html = '';
+  html += `<div class="detail-header"><h2>${tag.name}</h2>
+    <div class="sub">${categoryLookup(tag.category)}${tag.description ? ' · ' + tag.description : ''}</div></div>`;
+
+  // 合并 tag_index 和 zone_index（zone 标签可能只在 zone_index 中）
+  const tagIdx = INDEXES.tag_index[tagId] || {};
+  const zoneIdx = INDEXES.zone_index[tagId] || {};
+  const idx = {};
+  for (const type of ['attractions','shows','restaurants','dishes','tips','shortcuts','warnings','itineraries']) {
+    const items = [...new Set([...(tagIdx[type] || []), ...(zoneIdx[type] || [])])];
+    if (items.length) idx[type] = items;
+  }
+
+  html += renderEntityLinks('相关项目', 'attractions', idx.attractions, 'name');
+  html += renderEntityLinks('相关演出', 'shows', idx.shows, 'name');
+  html += renderEntityLinks('相关餐厅', 'restaurants', idx.restaurants, 'name');
+
+  html += renderEntityLinks('相关菜品', 'dishes', idx.dishes, 'name', '🍽️ ');
+
+  html += renderEntityLinks('相关技巧', 'tips', idx.tips, 'title');
+  html += renderEntityLinks('相关小道', 'shortcuts', idx.shortcuts, 'name');
+
+  html += renderEntityLinks('相关避雷', 'warnings', idx.warnings, 'content', '⚠️ ');
+
+  html += renderEntityLinks('相关行程', 'itineraries', idx.itineraries, 'name', '📅 ');
+
+  const hasAny = Object.values(idx).some(v => v && v.length);
+  if (!hasAny) html += '<div class="empty">暂无关联内容</div>';
+
+  return html;
+}
+
+// --- 更多 ---
+function renderMore() {
+  const items = [
+    {label: '行程方案', page: 'itineraries', icon: '📅'},
+    {label: '标签索引', page: 'tags', icon: '🏷️'},
+    {label: '隐藏技巧', page: 'tips', icon: '💡'},
+    {label: '避雷提醒', page: 'warnings', icon: '⚠️'},
+    {label: '秘密小道', page: 'shortcuts', icon: '🚶'},
+    {label: '行前准备', page: 'preparations', icon: '🎒'},
+  ];
+  let html = '<div class="section-title">更多内容</div>';
+  items.forEach(it => {
+    html += `<div class="list-item" onclick="nav('${it.page}')">
+      <div class="info"><h4>${it.icon} ${it.label}</h4></div>
+      <span class="arrow">›</span></div>`;
+  });
+
+  html += `<div class="card footer-text">
+    <p>生成时间：2026-05-05 20:46（北京时间）</p>
+    <p>数据版本：v${DATA.meta.version || '1.0'} · 数据更新日期：${DATA.meta.last_updated || '未知'}</p>
+  </div>`;
+  return html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "last_updated": "2026-05-05",
+  "version": "3.2.0",
+  "schema_version": "3.2.0",
+  "previous_version": "3.1.0",
+  "migration_date": "2026-05-05",
+  "changes": [
+    "初始版本：深圳城市旅游攻略"
+  ],
+  "park": {
+    "name": "深圳",
+    "name_en": "Shenzhen",
+    "location": "广东省深圳市",
+    "opening_time": "全天开放（各景点时间不同）",
+    "closing_time": {
+      "weekday": "各景点不同",
+      "weekend_holiday": "各景点不同",
+      "note": "世界之窗9:30-22:00，欢乐谷9:30-22:00，大梅沙6:30-23:00，深圳湾公园6:00-23:00"
+    },
+    "entry_deadline": {
+      "weekday": "各景点不同",
+      "weekend_holiday": "各景点不同",
+      "note": "世界之窗、欢乐谷21:00停止入场，博物馆17:00停止入馆"
+    },
+    "zones": [
+      "福田区",
+      "南山区",
+      "罗湖区",
+      "盐田区",
+      "宝安区",
+      "大鹏新区"
+    ]
+  },
+  "source_files": [
+    {"id": "sf_01", "filename": "shenzhen_research.md", "type": "research", "description": "深圳旅游综合研究资料"}
+  ]
+}

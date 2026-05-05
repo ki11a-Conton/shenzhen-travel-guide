@@ -1,0 +1,56 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "tips": [
+    {
+      "id": "tip_ww_ticket",
+      "category": "购票技巧",
+      "title": "世界之窗夜场票更划算",
+      "content": "世界之窗日场票220元，夜场票85元（17:00后入园）。夜场可以欣赏灯光秀，人少且温度适宜。建议傍晚入园，既能看日落又能看夜景。",
+      "tags": ["tag_util_must", "tag_zone_nanshan"],
+      "attraction_ids": ["attr_window_world"],
+      "opinion_ids": [],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "tip_dameisha_time",
+      "category": "时间技巧",
+      "title": "大梅沙最佳游玩时间",
+      "content": "大梅沙夏季人多，建议上午9点前到达。每年10月8日至次年5月免预约入园，其他时间需要提前在美丽深圳公众号预约。周末和节假日人非常多，建议工作日前往。",
+      "tags": ["tag_util_free", "tag_util_reserve", "tag_zone_yantian"],
+      "attraction_ids": ["attr_dameisha"],
+      "opinion_ids": [],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "tip_light_show",
+      "category": "预约技巧",
+      "title": "市民中心灯光秀预约攻略",
+      "content": "市民中心灯光秀每周五、六及节假日举办，需提前在福田文体通公众号预约。最佳观赏点在莲花山山顶（需爬山20分钟）或市民中心广场。建议提前30分钟到达占位。",
+      "tags": ["tag_util_reserve", "tag_time_night", "tag_zone_futian"],
+      "attraction_ids": [],
+      "opinion_ids": [],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "tip_shenzhen_subway",
+      "category": "交通技巧",
+      "title": "深圳地铁出行全攻略",
+      "content": "深圳地铁覆盖主要景点，下载深圳通APP或微信小程序扫码乘车。1号线贯穿罗湖-福田-南山，2号线到世界之窗、欢乐谷、深圳湾，8号线到大梅沙。运营时间6:00-23:00，高峰期避开1/2/5/11号线。",
+      "tags": ["tag_fac_subway"],
+      "attraction_ids": [],
+      "opinion_ids": [],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "tip_dongmen_food",
+      "category": "美食技巧",
+      "title": "东门老街美食打卡顺序",
+      "content": "东门老街美食众多，推荐路线：地铁老街站A出口→东门町美食街→太阳百货→茂业百货。必吃：章鱼小丸子、烤生蚝、双皮奶、肠粉。注意保管好随身物品，人多拥挤。",
+      "tags": ["tag_fac_food", "tag_zone_luohu"],
+      "attraction_ids": ["attr_dongmen"],
+      "opinion_ids": [],
+      "source_files": ["sf_01"]
+    }
+  ]
+}

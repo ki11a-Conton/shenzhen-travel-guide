@@ -1,0 +1,113 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "itineraries": [
+    {
+      "id": "itin_shenzhen_1day",
+      "name": "深圳经典一日游",
+      "description": "打卡深圳最经典的地标和海滨风光",
+      "tags": ["tag_util_must", "tag_int_medium"],
+      "principles": ["上午打卡地标", "下午海滨休闲", "傍晚看日落", "晚上看灯光秀"],
+      "source_files": ["sf_01"],
+      "time_slots": [
+        {
+          "period": "上午",
+          "items": [
+            {"time": "09:00", "action": "抵达世界之窗，购买门票入园", "note": "地铁1/2号线世界之窗站", "attraction_ids": ["attr_window_world"], "show_ids": [], "restaurant_ids": []},
+            {"time": "09:30", "action": "游览世界之窗微缩景观", "note": "推荐埃菲尔铁塔、金字塔", "attraction_ids": ["attr_window_world"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "中午",
+          "items": [
+            {"time": "12:00", "action": "午餐：润园四季椰子鸡", "note": "世界之窗附近", "attraction_ids": [], "show_ids": [], "restaurant_ids": ["rest_runyuan"]}
+          ]
+        },
+        {
+          "period": "下午",
+          "items": [
+            {"time": "14:00", "action": "前往深圳湾公园", "note": "地铁2号线湾厦站", "attraction_ids": ["attr_shenzhen_bay"], "show_ids": [], "restaurant_ids": []},
+            {"time": "14:30", "action": "漫步滨海栈道，远眺香港", "note": "可骑行或步行", "attraction_ids": ["attr_shenzhen_bay"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "傍晚",
+          "items": [
+            {"time": "17:30", "action": "前往莲花山公园", "note": "地铁3号线莲花村站", "attraction_ids": ["attr_lianhua_mountain"], "show_ids": [], "restaurant_ids": []},
+            {"time": "18:00", "action": "登顶俯瞰深圳CBD", "note": "邓小平铜像广场", "attraction_ids": ["attr_lianhua_mountain"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "晚上",
+          "items": [
+            {"time": "19:30", "action": "观看市民中心灯光秀", "note": "需提前预约", "attraction_ids": [], "show_ids": ["show_light_show"], "restaurant_ids": []},
+            {"time": "20:30", "action": "晚餐：点都德广式茶点", "note": "福田CBD附近", "attraction_ids": [], "show_ids": [], "restaurant_ids": ["rest_diandude"]}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "itin_shenzhen_2day",
+      "name": "深圳深度两日游",
+      "description": "深度体验深圳的都市魅力和海滨风情",
+      "tags": ["tag_util_must", "tag_int_medium", "tag_aud_couple"],
+      "principles": ["Day1都市线", "Day2海滨线", "每晚吃特色", "预留充足时间"],
+      "source_files": ["sf_01"],
+      "time_slots": [
+        {
+          "period": "Day1上午",
+          "items": [
+            {"time": "09:00", "action": "欢乐谷游玩", "note": "建议早到避开人流", "attraction_ids": ["attr_happy_valley"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day1中午",
+          "items": [
+            {"time": "12:30", "action": "午餐：八合里潮汕牛肉火锅", "note": "南山店", "attraction_ids": [], "show_ids": [], "restaurant_ids": ["rest_baheli"]}
+          ]
+        },
+        {
+          "period": "Day1下午",
+          "items": [
+            {"time": "14:30", "action": "深圳博物馆", "note": "提前预约", "attraction_ids": ["attr_shenzhen_museum"], "show_ids": [], "restaurant_ids": []},
+            {"time": "16:30", "action": "华强北逛街", "note": "数码产品天堂", "attraction_ids": ["attr_huaqiangbei"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day1晚上",
+          "items": [
+            {"time": "18:30", "action": "晚餐：东门老街小吃", "note": "各种深圳小吃", "attraction_ids": ["attr_dongmen"], "show_ids": [], "restaurant_ids": []},
+            {"time": "20:00", "action": "逛东门夜市", "note": "深圳最老牌商业街", "attraction_ids": ["attr_dongmen"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day2上午",
+          "items": [
+            {"time": "08:00", "action": "前往大梅沙", "note": "地铁8号线直达", "attraction_ids": ["attr_dameisha"], "show_ids": [], "restaurant_ids": []},
+            {"time": "09:00", "action": "大梅沙海滨游玩", "note": "沙滩踏浪、看海景", "attraction_ids": ["attr_dameisha"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day2中午",
+          "items": [
+            {"time": "12:00", "action": "午餐：盐田海鲜街", "note": "新鲜海鲜大餐", "attraction_ids": [], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day2下午",
+          "items": [
+            {"time": "14:00", "action": "前往欢乐港湾", "note": "地铁5号线宝华站", "attraction_ids": ["attr_happy_harbor"], "show_ids": [], "restaurant_ids": []},
+            {"time": "15:00", "action": "湾区之光摩天轮", "note": "深圳最高摩天轮", "attraction_ids": ["attr_happy_harbor"], "show_ids": [], "restaurant_ids": []}
+          ]
+        },
+        {
+          "period": "Day2晚上",
+          "items": [
+            {"time": "18:00", "action": "晚餐：光明乳鸽", "note": "深圳必吃美食", "attraction_ids": [], "show_ids": [], "restaurant_ids": ["rest_guangming"]},
+            {"time": "20:00", "action": "海上世界音乐喷泉", "note": "免费观赏", "attraction_ids": ["attr_sea_world"], "show_ids": ["show_water_show"], "restaurant_ids": []}
+          ]
+        }
+      ]
+    }
+  ]
+}

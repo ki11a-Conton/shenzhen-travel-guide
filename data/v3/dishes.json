@@ -1,0 +1,110 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "dishes": [
+    {
+      "id": "dish_yeziji",
+      "name": "椰子鸡",
+      "restaurant_ids": ["rest_runyuan"],
+      "alternatives": [],
+      "tags": ["tag_dish_cantonese", "tag_taste_fresh", "tag_taste_sweet", "tag_util_must"],
+      "zone_ids": ["tag_zone_futian"],
+      "price": 128,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_ruge",
+      "name": "光明红烧乳鸽",
+      "restaurant_ids": ["rest_guangming"],
+      "alternatives": [],
+      "tags": ["tag_dish_cantonese", "tag_taste_savory", "tag_util_must"],
+      "zone_ids": ["tag_zone_baoan"],
+      "price": 48,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_shuashuairou",
+      "name": "潮汕牛肉火锅",
+      "restaurant_ids": ["rest_baheli"],
+      "alternatives": [],
+      "tags": ["tag_dish_chaoshan", "tag_taste_fresh", "tag_util_must"],
+      "zone_ids": ["tag_zone_nanshan"],
+      "price": 88,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_xiajiao",
+      "name": "虾饺皇",
+      "restaurant_ids": ["rest_diandude"],
+      "alternatives": [],
+      "tags": ["tag_dish_cantonese", "tag_taste_fresh", "tag_taste_savory"],
+      "zone_ids": ["tag_zone_luohu"],
+      "price": 28,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_kaosheng",
+      "name": "炭烤生蚝",
+      "restaurant_ids": ["rest_sha_jing"],
+      "alternatives": [],
+      "tags": ["tag_dish_seafood", "tag_taste_fresh", "tag_taste_savory", "tag_util_must"],
+      "zone_ids": ["tag_zone_baoan"],
+      "price": 12,
+      "is_seasonal": true,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_changfen",
+      "name": "广式肠粉",
+      "restaurant_ids": ["rest_weiji"],
+      "alternatives": [],
+      "tags": ["tag_dish_snack", "tag_taste_savory", "tag_meta_classic"],
+      "zone_ids": ["tag_zone_luohu"],
+      "price": 15,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_tangshui",
+      "name": "传统糖水",
+      "restaurant_ids": ["rest_lifang"],
+      "alternatives": [],
+      "tags": ["tag_dish_dessert", "tag_taste_sweet", "tag_util_viral"],
+      "zone_ids": ["tag_zone_nanshan"],
+      "price": 18,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    },
+    {
+      "id": "dish_shaoe",
+      "name": "烧鹅",
+      "restaurant_ids": ["rest_chenguangji"],
+      "alternatives": [],
+      "tags": ["tag_dish_cantonese", "tag_taste_savory"],
+      "zone_ids": ["tag_zone_futian"],
+      "price": 58,
+      "is_seasonal": false,
+      "source_files": ["sf_01"],
+      "review_ids": [],
+      "opinion_ids": []
+    }
+  ]
+}

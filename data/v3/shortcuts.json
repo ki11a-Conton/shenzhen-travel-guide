@@ -1,0 +1,42 @@
+{
+  "version": "3.2.0",
+  "last_updated": "2026-05-05",
+  "shortcuts": [
+    {
+      "id": "sc_ww_to_hv",
+      "name": "世界之窗到欢乐谷近路",
+      "from": "世界之窗",
+      "to": "欢乐谷",
+      "route": "从世界之窗正门出，沿深南大道向东步行约5分钟即达欢乐谷正门，两景区相邻",
+      "savings": "节省打车费，步行仅需5分钟",
+      "avoid_mistake": "不要绕路去坐地铁，两个景区就在隔壁",
+      "condition": "适合连续游玩两个景区的游客",
+      "tags": ["tag_zone_nanshan", "tag_int_easy"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "sc_szb_to_seaworld",
+      "name": "深圳湾到海上世界",
+      "from": "深圳湾公园",
+      "to": "海上世界",
+      "route": "从深圳湾公园沿滨海栈道向东步行约30分钟，或乘坐地铁2号线从湾厦站到海上世界站",
+      "savings": "步行可欣赏沿途海景",
+      "avoid_mistake": "傍晚步行最佳，可以看日落",
+      "condition": "天气好时推荐步行",
+      "tags": ["tag_zone_nanshan", "tag_int_easy", "tag_time_evening"],
+      "source_files": ["sf_01"]
+    },
+    {
+      "id": "sc_dameisha_parking",
+      "name": "大梅沙停车省钱攻略",
+      "from": "大梅沙景区",
+      "to": "附近停车场",
+      "route": "不要停景区停车场（贵且满），可停在奥特莱斯停车场，消费满额可免费停车，然后步行5分钟到海滩",
+      "savings": "停车费省一半以上",
+      "avoid_mistake": "节假日景区停车场很早就会满",
+      "condition": "自驾游客适用",
+      "tags": ["tag_zone_yantian", "tag_fac_parking"],
+      "source_files": ["sf_01"]
+    }
+  ]
+}
